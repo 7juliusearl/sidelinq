@@ -1,0 +1,60 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "spiritmade/images"
+public_folder: "/images"
+
+collections:
+  - name: "links"
+    label: "Links"
+    label_singular: "Link"
+    folder: "spiritmade/"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    fields:
+      - label: "Site Settings"
+        name: "site"
+        widget: "object"
+        fields:
+          - { label: "Site Name", name: "name", widget: "string" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Avatar URL", name: "avatar", widget: "string", required: false }
+          - { label: "Accent Color", name: "accent", widget: "string", default: "#111111" }
+
+      - label: "Categories"
+        name: "categories"
+        widget: "list"
+        fields:
+          - { label: "Category ID (URL slug)", name: "id", widget: "string", hint: "e.g. video-guestbook" }
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Description", name: "description", widget: "string", required: false }
+          - { label: "Icon (emoji)", name: "icon", widget: "string", default: "🔗" }
+
+          - label: "Sections"
+            name: "sections"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Section Name", name: "name", widget: "string", hint: "e.g. Camera & Accessories" }
+              - label: "Links"
+                name: "links"
+                widget: "list"
+                fields:
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Description", name: "description", widget: "string", required: false }
+                  - { label: "URL", name: "url", widget: "string" }
+                  - { label: "Image URL", name: "image", widget: "string", required: false }
+                  - { label: "Badge", name: "badge", widget: "string", required: false, hint: "e.g. Top Pick" }
+
+          - label: "Links (flat, no sections)"
+            name: "links"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "string", required: false }
+              - { label: "URL", name: "url", widget: "string" }
+              - { label: "Image URL", name: "image", widget: "string", required: false }
+              - { label: "Badge", name: "badge", widget: "string", required: false }
