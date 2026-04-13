@@ -9,37 +9,285 @@
     {
       "id": "video-guestbook",
       "name": "Video Guest Book",
-      "description": "Everything you need to set up the perfect video guest book experience.",
+      "description": "Everything you need to build the perfect video guest book setup.",
       "icon": "🎬",
       "links": [
         {
-          "title": "Example Product",
-          "description": "Short description of what this is and why you love it.",
-          "url": "https://your-affiliate-link.com",
+          "title": "Canon R100",
+          "description": "The camera at the heart of the setup.",
+          "url": "https://amzn.to/4h2xmcf",
           "image": "",
           "badge": "Top Pick"
         },
         {
-          "title": "Another Product",
-          "description": "Great for capturing memories at events.",
-          "url": "https://your-affiliate-link.com",
+          "title": "Dummy Battery",
+          "description": "Keep the camera running all night without worrying about battery life.",
+          "url": "https://amzn.to/3QABaXc",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "16mm Lens",
+          "description": "Wide angle lens perfect for capturing full-body video messages.",
+          "url": "https://amzn.to/3Dc98yk",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "ND Filter",
+          "description": "Control your exposure in brightly lit venues.",
+          "url": "https://amzn.to/4hYs2Yo",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "iPad Cage (9.7\"–11\")",
+          "description": "Secure mount for smaller iPads used as the guest-facing screen.",
+          "url": "https://amzn.to/3Xk0Knh",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "iPad Cage (11.5\"–13\")",
+          "description": "Secure mount for larger iPads.",
+          "url": "https://amzn.to/4h3YwPP",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Camera NATO Mount",
+          "description": "Attaches accessories to the camera rail system.",
+          "url": "https://amzn.to/3DkeXJR",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "USB-C Hub",
+          "description": "Expand connectivity for the iPad in your setup.",
+          "url": "https://amzn.to/3QGWNoE",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "USB-C Cable (Camera)",
+          "description": "Connects the camera to the hub for live view.",
+          "url": "https://amzn.to/4bmrQ2B",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "USB-C Cable (Hub)",
+          "description": "Connects the hub back to the iPad.",
+          "url": "https://amzn.to/41xgcPc",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Super Clamp",
+          "description": "Versatile clamp for mounting arms and accessories.",
+          "url": "https://amzn.to/4klhLqK",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Arm to Super Clamp",
+          "description": "Extension arm for positioning your iPad or accessories.",
+          "url": "https://amzn.to/4h1ifQd",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Arm Clamp (Cage Support)",
+          "description": "Supports the cage structure for a clean build.",
+          "url": "https://amzn.to/4blq7L9",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "USB-C Hub Clamp",
+          "description": "Mounts the hub cleanly onto the rig.",
+          "url": "https://amzn.to/4hUNSMF",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Audio Splitter",
+          "description": "Split audio output for monitoring while recording.",
+          "url": "https://a.co/d/2rLnFvt",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Angle Adapter",
+          "description": "Helps route cables neatly within the rig.",
+          "url": "https://amzn.to/4brrt6Z",
           "image": "",
           "badge": ""
         }
       ]
     },
     {
-      "id": "photography-gear",
-      "name": "Photography Gear",
-      "description": "My go-to gear for wedding photography.",
-      "icon": "📷",
+      "id": "microphone-setup",
+      "name": "Microphone Setup",
+      "description": "Crystal clear audio for every guest message.",
+      "icon": "🎙️",
       "links": [
         {
-          "title": "Camera Body",
-          "description": "The camera I shoot with every weekend.",
-          "url": "https://your-affiliate-link.com",
+          "title": "Boom Mic",
+          "description": "Directional mic that picks up voice without background noise.",
+          "url": "https://amzn.to/3XnnmTT",
           "image": "",
-          "badge": "Daily Driver"
+          "badge": "Top Pick"
+        },
+        {
+          "title": "Wireless Mic",
+          "description": "Freedom to move around without sacrificing audio quality.",
+          "url": "https://amzn.to/4h471ud",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Mic Arm / Holder Arm",
+          "description": "Positions the mic right where you need it.",
+          "url": "https://amzn.to/4brLb2I",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Mic Holder",
+          "description": "Shock mount style holder to reduce vibration noise.",
+          "url": "https://amzn.to/4hWJBZ5",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Mic Handle",
+          "description": "Comfortable pistol grip for handheld mic use.",
+          "url": "https://amzn.to/4kbfFKl",
+          "image": "",
+          "badge": ""
+        }
+      ]
+    },
+    {
+      "id": "lighting",
+      "name": "Lighting",
+      "description": "Make every guest look great on camera.",
+      "icon": "💡",
+      "links": [
+        {
+          "title": "Amaran 60XS Light",
+          "description": "Powerful, compact LED light perfect for events.",
+          "url": "https://amzn.to/43dHueM",
+          "image": "",
+          "badge": "Top Pick"
+        },
+        {
+          "title": "Softbox 17\"",
+          "description": "Diffuses the light for a flattering, even glow.",
+          "url": "https://amzn.to/4hV0qUh",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Light Stand (Round Base)",
+          "description": "Stable stand that works on any venue floor.",
+          "url": "https://amzn.to/3QA3xoz",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Light Mount",
+          "description": "Attaches the light to the stand or rig cleanly.",
+          "url": "https://amzn.to/3Dede8Z",
+          "image": "",
+          "badge": ""
+        }
+      ]
+    },
+    {
+      "id": "power",
+      "name": "Power",
+      "description": "Keep everything running from ceremony to last dance.",
+      "icon": "⚡",
+      "links": [
+        {
+          "title": "Anker Power Station",
+          "description": "Portable power for the whole rig — no outlet needed.",
+          "url": "https://amzn.to/4bjxQt2",
+          "image": "",
+          "badge": "Top Pick"
+        },
+        {
+          "title": "V-Mount Battery",
+          "description": "High-capacity battery for extended shoots.",
+          "url": "https://amzn.to/3XjyBwx",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "V-Mount Converter (Power Inverter)",
+          "description": "Converts V-mount power to standard AC outlet.",
+          "url": "https://www.bhphotovideo.com/c/product/1467006-REG/savage_bnp_pi_110_power_110v_inverter.html/overview",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "V-Mount Lock",
+          "description": "Secures the V-mount battery to the plate.",
+          "url": "https://amzn.to/41luyRq",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "USB-A to USB-C Converter",
+          "description": "Adapts older USB-A ports to power USB-C devices.",
+          "url": "https://amzn.to/4hSXGqg",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Power Strip",
+          "description": "Expand your outlets at any venue.",
+          "url": "https://amzn.to/3D83du4",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Angled Power Cord",
+          "description": "Routes the power cable neatly behind the rig.",
+          "url": "https://amzn.to/4hWIXum",
+          "image": "",
+          "badge": ""
+        }
+      ]
+    },
+    {
+      "id": "cable-management",
+      "name": "Cable Management",
+      "description": "Keep your setup clean and professional.",
+      "icon": "🔌",
+      "links": [
+        {
+          "title": "Velcro Strips",
+          "description": "Bundle cables together quickly and reusably.",
+          "url": "https://amzn.to/4idFCqC",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Cable Straps",
+          "description": "Keep longer runs tidy and tangle-free.",
+          "url": "https://amzn.to/43aVlCH",
+          "image": "",
+          "badge": ""
+        },
+        {
+          "title": "Cable Sleeve",
+          "description": "Wrap multiple cables into one clean bundle.",
+          "url": "https://amzn.to/3EVFpKh",
+          "image": "",
+          "badge": ""
         }
       ]
     }
