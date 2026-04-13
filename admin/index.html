@@ -487,8 +487,15 @@
         onEnd: async function(evt) {
           const item = data.categories.splice(evt.oldIndex, 1)[0];
           data.categories.splice(evt.newIndex, 0, item);
-          try { await saveData('reorder categories'); showStatus('Order saved!', 'success'); buildCategorySelects(); }
-          catch(e) { showStatus('Reorder failed: ' + e.message, 'error'); renderCats(); }
+          showStatus('Saving order...', 'success');
+          try {
+            await saveData('reorder categories');
+            showStatus('Order saved! ✓', 'success');
+            buildCategorySelects();
+          } catch(e) {
+            showStatus('Reorder failed: ' + e.message, 'error');
+            renderCats();
+          }
         }
       });
     }
@@ -503,7 +510,10 @@
           onEnd: async function(evt) {
             const item = cat.sections.splice(evt.oldIndex, 1)[0];
             cat.sections.splice(evt.newIndex, 0, item);
-            try { await saveData(`reorder sections in ${cat.name}`); showStatus('Section order saved!', 'success'); }
+            try {
+              await saveData(`reorder sections in ${cat.name}`);
+              showStatus('Section order saved! ✓', 'success');
+            }
             catch(e) { showStatus('Reorder failed: ' + e.message, 'error'); renderCats(); }
           }
         });
