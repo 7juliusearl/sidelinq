@@ -332,8 +332,6 @@
         headers: { Accept: 'application/vnd.github.v3+json' },
         cache: 'no-store'
       });
-        headers: { Accept: 'application/vnd.github.v3+json' }
-      });
       const shaData = await shaRes.json();
       const res = await fetch('/.netlify/functions/commit', {
         method: 'POST',
