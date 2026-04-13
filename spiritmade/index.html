@@ -141,6 +141,16 @@
     }
     .link-arrow { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
 
+    /* ── Section headings ────────────────────────────── */
+    .section-heading {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 32px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-heading:first-child { margin-top: 0; }
+
     /* ── Footer ──────────────────────────────────────── */
     .footer { text-align: center; margin-top: 64px; color: var(--muted); font-size: 0.8rem; }
 
@@ -196,7 +206,7 @@
             <div class="category-name">${cat.name}</div>
             ${cat.description ? `<div class="category-desc">${cat.description}</div>` : ''}
           </div>
-          <div class="category-count">${cat.links.length} link${cat.links.length !== 1 ? 's' : ''}</div>
+          <div class="category-count">${(cat.sections ? cat.sections.reduce((n,s)=>n+s.links.length,0) : (cat.links||[]).length)} links</div>
           <div class="category-arrow">›</div>
         </a>
       `).join('');
@@ -209,6 +219,24 @@
         </div>
         <div class="category-grid">${cards}</div>
         <div class="footer">Updated with love ✦</div>
+      `;
+    }
+
+    function renderLinkCard(link) {
+      const thumbHtml = link.image
+        ? `<div class="link-thumb"><img src="${link.image}" alt="${link.title}" /></div>`
+        : `<div class="link-thumb">🔗</div>`;
+      const badge = link.badge ? `<div class="link-badge">${link.badge}</div>` : '';
+      return `
+        <a class="link-card" href="${link.url}" target="_blank" rel="noopener noreferrer">
+          ${badge}
+          ${thumbHtml}
+          <div class="link-info">
+            <div class="link-title">${link.title}</div>
+            ${link.description ? `<div class="link-desc">${link.description}</div>` : ''}
+          </div>
+          <div class="link-arrow">›</div>
+        </a>
       `;
     }
 
@@ -226,23 +254,19 @@
 
       document.title = `${cat.name} — ${DATA.site.name}`;
 
-      const links = cat.links.map(link => {
-        const thumbHtml = link.image
-          ? `<div class="link-thumb"><img src="${link.image}" alt="${link.title}" /></div>`
-          : `<div class="link-thumb">🔗</div>`;
-        const badge = link.badge ? `<div class="link-badge">${link.badge}</div>` : '';
-        return `
-          <a class="link-card" href="${link.url}" target="_blank" rel="noopener noreferrer">
-            ${badge}
-            ${thumbHtml}
-            <div class="link-info">
-              <div class="link-title">${link.title}</div>
-              ${link.description ? `<div class="link-desc">${link.description}</div>` : ''}
-            </div>
-            <div class="link-arrow">›</div>
-          </a>
-        `;
-      }).join('');
+      let bodyHtml = '';
+      if (cat.sections && cat.sections.length) {
+        // Render with sub-sections
+        bodyHtml = cat.sections.map(section => `
+          <div class="section-heading">${section.name}</div>
+          <div class="links-list">
+            ${section.links.map(renderLinkCard).join('')}
+          </div>
+        `).join('');
+      } else {
+        // Flat list
+        bodyHtml = `<div class="links-list">${(cat.links || []).map(renderLinkCard).join('')}</div>`;
+      }
 
       document.getElementById('app').innerHTML = `
         <a class="back-btn" href="#">← All Categories</a>
@@ -251,7 +275,7 @@
           <h2>${cat.name}</h2>
           ${cat.description ? `<p>${cat.description}</p>` : ''}
         </div>
-        <div class="links-list">${links}</div>
+        ${bodyHtml}
         <div class="footer">Updated with love ✦</div>
       `;
     }
