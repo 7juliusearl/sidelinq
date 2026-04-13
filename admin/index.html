@@ -293,7 +293,7 @@
     // ── Load ───────────────────────────────────────────────
     async function loadLinks() {
       try {
-        const res = await fetch('https://raw.githubusercontent.com/7juliusearl/sidelinq/main/spiritmade/links.json');
+        const res = await fetch('https://raw.githubusercontent.com/7juliusearl/sidelinq/main/spiritmade/links.json?v=' + Date.now());
         if (!res.ok) throw new Error();
         data = await res.json();
         buildCategorySelects();
