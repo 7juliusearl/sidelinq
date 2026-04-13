@@ -430,7 +430,7 @@
       if (!links.length) { cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No links yet.</p>'; return; }
       cont.innerHTML = links.map((l, i) => `
         <div class="link-item">
-          <img src="${l.image || 'https://via.placeholder.com/44?text=?}'}" alt="${l.title}" onerror="this.src='https://via.placeholder.com/44?text=?'" />
+          <img src="${l.image || 'https://via.placeholder.com/44?text=?'}" alt="${l.title}" onerror="this.src='https://via.placeholder.com/44?text=?'" />
           <div class="link-item-info">
             <div class="link-item-title">${l.title}</div>
             <div class="link-item-meta">${l._catName}${l._secName ? ' › ' + l._secName : ''}</div>
