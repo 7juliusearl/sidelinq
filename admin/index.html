@@ -293,13 +293,18 @@
     // ── Load ───────────────────────────────────────────────
     async function loadLinks() {
       try {
-        const res = await fetch('https://raw.githubusercontent.com/7juliusearl/sidelinq/main/spiritmade/links.json?v=' + Date.now());
-        if (!res.ok) throw new Error();
-        data = await res.json();
+        const res = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json?ref=main&t=' + Date.now(), {
+          headers: { Accept: 'application/vnd.github.v3+json' },
+          cache: 'no-store'
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const file = await res.json();
+        data = JSON.parse(atob(file.content));
         buildCategorySelects();
         buildLinksFlat();
-      } catch {
-        showStatus('Could not load — is the repo public?', 'error');
+        showStatus('Loaded ✓', 'success');
+      } catch(e) {
+        showStatus('Could not load: ' + e.message, 'error');
       }
     }
 
@@ -323,7 +328,10 @@
 
     // ── Save ──────────────────────────────────────────────
     async function saveData(msg) {
-      const shaRes = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json?v=' + Date.now(), {
+      const shaRes = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json?t=' + Date.now(), {
+        headers: { Accept: 'application/vnd.github.v3+json' },
+        cache: 'no-store'
+      });
         headers: { Accept: 'application/vnd.github.v3+json' }
       });
       const shaData = await shaRes.json();
