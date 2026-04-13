@@ -323,7 +323,7 @@
 
     // ── Save ──────────────────────────────────────────────
     async function saveData(msg) {
-      const shaRes = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json', {
+      const shaRes = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json?v=' + Date.now(), {
         headers: { Accept: 'application/vnd.github.v3+json' }
       });
       const shaData = await shaRes.json();
