@@ -393,16 +393,9 @@
 
     // ── Load data ──────────────────────────────────────────
     async function loadLinks() {
-      const token = netlifyIdentity.currentUser()?.token?.jwt_token;
-      if (!token) return;
-
-      const res = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json', {
-        headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' }
-      });
-      const file = await res.json();
-      const content = atob(file.content);
-      data = JSON.parse(content);
-
+      const res = await fetch('https://raw.githubusercontent.com/7juliusearl/sidelinq/main/spiritmade/links.json');
+      if (!res.ok) { showStatus('Could not load links', 'error'); return; }
+      data = await res.json();
       buildCategorySelects();
       buildLinksFlat();
     }
@@ -428,30 +421,29 @@
 
     // ── Save to GitHub ─────────────────────────────────────
     async function saveData(newData, message) {
-      const token = netlifyIdentity.currentUser()?.token?.jwt_token;
-      const content = btoa(JSON.stringify(newData, null, 2));
-
-      // Get current file SHA
-      const get = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json', {
-        headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' }
+      // Get current SHA first
+      const shaRes = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json', {
+        headers: { Accept: 'application/vnd.github.v3+json' }
       });
-      const file = await get.json();
+      const shaData = await shaRes.json();
 
-      const res = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json', {
-        method: 'PUT',
-        headers: {
-          Authorization: 'token ' + token,
-          'Content-Type': 'application/json',
-          Accept: 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify({
-          message: message || 'update links.json',
-          content: content,
-          sha: file.sha
-        })
+      const body = {
+        path: 'spiritmade/links.json',
+        content: JSON.stringify(newData, null, 2),
+        message,
+        sha: shaData.sha
+      };
+
+      const res = await fetch('/.netlify/functions/commit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       });
 
-      if (!res.ok) throw new Error('GitHub API error: ' + res.status);
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Save failed');
+      }
       return res.json();
     }
 
