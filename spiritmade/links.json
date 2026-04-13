@@ -7,18 +7,10 @@
   },
   "categories": [
     {
-      "id": "beast-case",
-      "name": "Beast Camera Case",
-      "description": "My wedding camera case",
-      "icon": "🟧",
-      "sections": [],
-      "links": []
-    },
-    {
       "id": "video-guestbook",
       "name": "Video Guest Book",
-      "description": "My full video guest book setup — everything I use at every wedding.",
-      "icon": "🎬",
+      "description": "My full video guest book setup \u2014 everything I use at every wedding.",
+      "icon": "\ud83c\udfac",
       "sections": [
         {
           "name": "Camera & Accessories",
@@ -32,7 +24,7 @@
             },
             {
               "title": "Dummy Battery",
-              "description": "Keep the camera running all night — no battery swaps.",
+              "description": "Keep the camera running all night \u2014 no battery swaps.",
               "url": "https://amzn.to/3QABaXc",
               "image": "https://m.media-amazon.com/images/I/613Owx1luOL._AC_SL300_.jpg",
               "badge": ""
@@ -106,14 +98,14 @@
           "name": "iPad & Attachments",
           "links": [
             {
-              "title": "iPad Cage (9.7\"–11\")",
+              "title": "iPad Cage (9.7\"\u201311\")",
               "description": "Secure mount for smaller iPads.",
               "url": "https://amzn.to/3Xk0Knh",
               "image": "https://m.media-amazon.com/images/I/61hIx-ZajlL._AC_SL300_.jpg",
               "badge": ""
             },
             {
-              "title": "iPad Cage (11.5\"–13\")",
+              "title": "iPad Cage (11.5\"\u201313\")",
               "description": "Secure mount for larger iPads.",
               "url": "https://amzn.to/4h3YwPP",
               "image": "https://m.media-amazon.com/images/I/51OqrTYEwbL._AC_SL300_.jpg",
@@ -210,7 +202,7 @@
             },
             {
               "title": "Anker Power Station",
-              "description": "Portable power for the whole rig — no outlet needed.",
+              "description": "Portable power for the whole rig \u2014 no outlet needed.",
               "url": "https://amzn.to/4bjxQt2",
               "image": "https://m.media-amazon.com/images/I/71au0jKOYhL._AC_SL300_.jpg",
               "badge": ""
@@ -286,6 +278,14 @@
           ]
         }
       ]
+    },
+    {
+      "id": "beast-case",
+      "name": "Beast Camera Case",
+      "description": "My wedding camera case",
+      "icon": "\ud83d\udfe7",
+      "sections": [],
+      "links": []
     }
   ]
 }
