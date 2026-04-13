@@ -368,22 +368,17 @@
         // Resolve redirects first (important for amzn.to short links)
         const resolveRes = await fetch(url, { method: 'HEAD', redirect: 'follow' });
         const finalUrl = resolveRes.url;
-        // Use corsproxy.io — more reliable than allorigins for redirect-heavy URLs
-        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(finalUrl);
-        const res = await fetch(proxyUrl);
-        const html = await res.text();
-        const ogImg = html.match(/<meta[^>]+(?:property|name)=["']og:image["'][^>]+content=["']([^"']+)["']/i)
-                   || html.match(/content=["']([^"']+)["'][^>]+(?:property|name)=["']og:image["']/i);
-        const ogTitle = html.match(/<meta[^>]+(?:property|name)=["']og:title["'][^>]+content=["']([^"']+)["']/i)
-                     || html.match(/content=["']([^"']+)["'][^>]+(?:property|name)=["']og:title["']/i);
-        const title = ogTitle ? ogTitle[1].replace(/&amp;/g,'&').trim() : '';
-        const img = ogImg ? ogImg[1] : '';
-        if (title) document.getElementById('linkTitle').value = title;
-        if (img) {
-          document.getElementById('linkImage').value = img;
-          const p = document.getElementById('imgPreview'); p.src = img; p.classList.add('show');
+        // Use our own Netlify preview function
+        const res = await fetch('/.netlify/functions/preview?url=' + encodeURIComponent(url));
+        if (!res.ok) throw new Error("Preview fetch failed");
+        const data = await res.json();
+        if (data.title) document.getElementById("linkTitle").value = data.title;
+        if (data.description) document.getElementById("linkDesc").value = data.description;
+        if (data.image) {
+          document.getElementById("linkImage").value = data.image;
+          const p = document.getElementById("imgPreview"); p.src = data.image; p.classList.add("show");
         }
-        showStatus(img || title ? 'Auto-filled!' : 'No preview found — fill in manually', img || title ? 'success' : 'error');
+        showStatus(data.title || data.image ? "Auto-filled!" : "No preview found — fill in manually", data.title || data.image ? "success" : "error");
       } catch { showStatus('Could not fetch URL — fill in manually', 'error'); }
       finally { btn.textContent = 'Auto-fill'; btn.classList.remove('loading'); }
     });
