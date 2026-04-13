@@ -1,5 +1,3 @@
-const { Octokit } = require("@octokit/rest");
-
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
@@ -23,20 +21,31 @@ exports.handler = async (event) => {
   }
 
   try {
-    const octokit = new Octokit({ auth: token });
-
     const encoded = Buffer.from(content).toString("base64");
 
+    const url = `https://api.github.com/repos/7juliusearl/sidelinq/contents/${path}`;
     const updateData = {
-      owner: "7juliusearl",
-      repo: "sidelinq",
-      path,
       message,
       content: encoded,
     };
     if (sha) updateData.sha = sha;
 
-    await octokit.repos.createOrUpdateFileContents(updateData);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: "token " + token,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "Sidelinq-CMS"
+      },
+      body: JSON.stringify(updateData)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { statusCode: res.status, body: JSON.stringify({ error: data.message || "GitHub API error" }) };
+    }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
   } catch (err) {
