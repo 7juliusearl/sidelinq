@@ -6,13 +6,14 @@
   <title>Sidelinq — Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #f5f5f5; --surface: #ffffff; --border: #e0e0e0;
       --text: #111111; --muted: #666666; --accent: #111111;
       --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
     }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
     .hidden { display: none !important; }
@@ -63,7 +64,6 @@
 
     .add-btn { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 4px; }
     .add-btn:hover { opacity: 0.88; }
-    .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ── Links list ────────────────────────── */
     .link-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; box-shadow: var(--shadow); }
@@ -78,15 +78,21 @@
     .link-item-actions .edit-btn:hover { background: var(--bg); }
 
     /* ── Category cards ───────────────────── */
-    .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
-    .cat-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .drag-list { list-style: none; padding: 0; }
+    .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px; box-shadow: var(--shadow); }
+    .cat-card.sortable-ghost { opacity: 0.3; }
+    .cat-card.sortable-chosen { box-shadow: var(--shadow-md); }
+    .cat-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .drag-handle { cursor: grab; color: var(--muted); font-size: 1.1rem; padding: 4px; user-select: none; flex-shrink: 0; }
+    .drag-handle:active { cursor: grabbing; }
     .cat-card-title { font-size: 1rem; font-weight: 700; }
-    .cat-card-id { font-size: 0.75rem; color: var(--muted); font-family: monospace; margin-top: 2px; }
+    .cat-card-id { font-size: 0.75rem; color: var(--muted); font-family: monospace; }
     .cat-card-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
-    .cat-card-secs { margin-bottom: 12px; }
-    .sec-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 0.78rem; margin-right: 6px; margin-bottom: 6px; }
-    .sec-chip span { cursor: pointer; opacity: 0.5; font-size: 0.9rem; }
-    .sec-chip span:hover { opacity: 1; }
+    .sec-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .sec-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 0.78rem; }
+    .sec-chip .sec-del { cursor: pointer; opacity: 0.5; font-size: 0.95rem; line-height: 1; }
+    .sec-chip .sec-del:hover { opacity: 1; color: #e53935; }
+    .sec-chip.sortable-ghost { opacity: 0.3; }
     .cat-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .cat-card-actions button { padding: 7px 14px; border-radius: 7px; font-size: 0.8rem; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid var(--border); background: none; }
     .cat-card-actions button:hover { background: var(--bg); }
@@ -94,16 +100,18 @@
     .cat-card-actions .delete-btn:hover { background: #e53935; color: white; }
     .add-sec-btn { border-style: dashed !important; color: var(--muted) !important; }
 
+    .reorder-hint { font-size: 0.78rem; color: var(--muted); text-align: center; margin-bottom: 16px; }
+
     /* ── Modals ────────────────────────────── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
     .modal { background: white; border-radius: 16px; padding: 28px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
-    .modal h3 { font-size: 1rem; margin-bottom: 20px; padding-right: 24px; }
+    .modal h3 { font-size: 1rem; margin-bottom: 20px; padding-right: 32px; }
     .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1; }
     .modal-close:hover { color: var(--text); }
     .modal .add-btn { margin-top: 16px; }
 
     /* ── Status toast ─────────────────────── */
-    .status { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; box-shadow: var(--shadow-md); transform: translateY(100px); opacity: 0; transition: transform 0.25s, opacity 0.25s; z-index: 200; }
+    .status { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; box-shadow: var(--shadow-md); transform: translateY(100px); opacity: 0; transition: transform 0.25s, opacity 0.25s; z-index: 200; pointer-events: none; }
     .status.show { transform: none; opacity: 1; }
     .status.success { background: #111; color: #fff; }
     .status.error { background: #e53935; color: #fff; }
@@ -142,7 +150,7 @@
         <button class="tab" data-tab="categories">Categories</button>
       </div>
 
-      <!-- ── Add Link ────────────────────── -->
+      <!-- Add Link -->
       <div id="tabadd" class="tab-content">
         <div class="card">
           <h2>Add a New Link</h2>
@@ -182,11 +190,11 @@
             <label>Badge <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
             <input type="text" id="linkBadge" placeholder="e.g. Top Pick" />
           </div>
-          <button class="add-btn" id="addBtn">Add Link</button>
+          <button class="add-btn" id="addLinkBtn">Add Link</button>
         </div>
       </div>
 
-      <!-- ── Manage Links ────────────────── -->
+      <!-- Manage Links -->
       <div id="tabmanage" class="tab-content hidden">
         <div class="card">
           <h2>All Links</h2>
@@ -194,7 +202,7 @@
         </div>
       </div>
 
-      <!-- ── Categories ──────────────────── -->
+      <!-- Categories -->
       <div id="tabcategories" class="tab-content hidden">
         <div class="card">
           <h2>Add New Category</h2>
@@ -222,7 +230,7 @@
         </div>
 
         <div style="margin-top: 32px">
-          <h2 style="font-size:1rem;font-weight:600;margin-bottom:16px">Existing Categories</h2>
+          <p class="reorder-hint">☰ Drag categories to reorder them on your site</p>
           <div id="catsContainer"></div>
         </div>
       </div>
@@ -236,14 +244,13 @@
   <div id="secModal" class="modal-overlay hidden">
     <div class="modal">
       <button class="modal-close" onclick="closeSecModal()">×</button>
-      <h3 id="secModalTitle">Add Section</h3>
+      <h3>Add Section</h3>
       <div class="field" style="margin-top:16px">
         <label>Section Name</label>
         <input type="text" id="secNameInput" placeholder="e.g. Camera & Accessories" />
       </div>
-      <div id="secEditIdx" style="display:none"></div>
       <div id="secEditCatIdx" style="display:none"></div>
-      <button class="add-btn" onclick="saveSec()">Save Section</button>
+      <button class="add-btn" onclick="saveNewSec()">Save Section</button>
     </div>
   </div>
 
@@ -252,9 +259,7 @@
     // ── State ──────────────────────────────────────────────
     let data = null;
     let links = [];
-    let editLinkIdx = null;
-    let deleteLinkIdx = null;
-    let deleteCatIdx = null;
+    let sortableCats = null;
 
     // ── Auth ───────────────────────────────────────────────
     function showApp(user) {
@@ -281,7 +286,7 @@
         document.querySelectorAll('.tab-content').forEach(p => p.classList.add('hidden'));
         document.getElementById('tab' + btn.dataset.tab).classList.remove('hidden');
         if (btn.dataset.tab === 'manage') renderLinks();
-        if (btn.dataset.tab === 'categories') renderCats();
+        if (btn.dataset.tab === 'categories') { renderCats(); initCatSort(); }
       });
     });
 
@@ -294,7 +299,7 @@
         buildCategorySelects();
         buildLinksFlat();
       } catch {
-        showStatus('Could not load links — is the repo public?', 'error');
+        showStatus('Could not load — is the repo public?', 'error');
       }
     }
 
@@ -322,21 +327,12 @@
         headers: { Accept: 'application/vnd.github.v3+json' }
       });
       const shaData = await shaRes.json();
-      const body = {
-        path: 'spiritmade/links.json',
-        content: JSON.stringify(data, null, 2),
-        message: msg,
-        sha: shaData.sha
-      };
       const res = await fetch('/.netlify/functions/commit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ path: 'spiritmade/links.json', content: JSON.stringify(data, null, 2), message: msg, sha: shaData.sha })
       });
-      if (!res.ok) {
-        const e = await res.json();
-        throw new Error(e.error || 'Save failed');
-      }
+      if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Save failed'); }
       return res.json();
     }
 
@@ -344,9 +340,7 @@
     function buildCategorySelects() {
       const catSel = document.getElementById('linkCategory');
       catSel.innerHTML = '<option value="">Select category...</option>';
-      (data.categories || []).forEach(c => {
-        catSel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-      });
+      (data.categories || []).forEach(c => { catSel.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
       catSel.onchange = () => buildSectionSelects(catSel.value);
     }
 
@@ -355,9 +349,7 @@
       secSel.innerHTML = '<option value="">Select section...</option>';
       const cat = (data.categories || []).find(c => c.id === catId);
       if (!cat || !cat.sections) return;
-      cat.sections.forEach(s => {
-        secSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
-      });
+      cat.sections.forEach(s => { secSel.innerHTML += `<option value="${s.name}">${s.name}</option>`; });
     }
 
     // ── Auto-fill ──────────────────────────────────────────
@@ -365,8 +357,7 @@
       const url = document.getElementById('linkUrl').value.trim();
       if (!url) return;
       const btn = document.getElementById('fetchBtn');
-      btn.textContent = 'Fetching...';
-      btn.classList.add('loading');
+      btn.textContent = 'Fetching...'; btn.classList.add('loading');
       try {
         const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
         const html = await res.text();
@@ -379,15 +370,11 @@
         if (title) document.getElementById('linkTitle').value = title;
         if (img) {
           document.getElementById('linkImage').value = img;
-          const p = document.getElementById('imgPreview');
-          p.src = img; p.classList.add('show');
+          const p = document.getElementById('imgPreview'); p.src = img; p.classList.add('show');
         }
         showStatus('Auto-filled!', 'success');
-      } catch {
-        showStatus('Could not fetch URL — fill in manually', 'error');
-      } finally {
-        btn.textContent = 'Auto-fill'; btn.classList.remove('loading');
-      }
+      } catch { showStatus('Could not fetch URL — fill in manually', 'error'); }
+      finally { btn.textContent = 'Auto-fill'; btn.classList.remove('loading'); }
     });
 
     document.getElementById('linkImage').addEventListener('input', e => {
@@ -396,7 +383,7 @@
     });
 
     // ── Add link ───────────────────────────────────────────
-    document.getElementById('addBtn').addEventListener('click', async () => {
+    document.getElementById('addLinkBtn').addEventListener('click', async () => {
       const url = document.getElementById('linkUrl').value.trim();
       const title = document.getElementById('linkTitle').value.trim();
       const desc = document.getElementById('linkDesc').value.trim();
@@ -410,12 +397,9 @@
       if (!cat) return;
       const newLink = { title, description: desc, url, image, badge };
       if (secName && cat.sections && cat.sections.length) {
-        const sec = cat.sections.find(s => s.name === secName) || cat.sections[0];
-        sec.links = sec.links || [];
-        sec.links.push(newLink);
+        (cat.sections.find(s => s.name === secName) || cat.sections[0]).links.push(newLink);
       } else {
-        cat.links = cat.links || [];
-        cat.links.push(newLink);
+        cat.links = cat.links || []; cat.links.push(newLink);
       }
       try {
         await saveData(`add link: ${title}`);
@@ -425,16 +409,14 @@
         document.getElementById('linkCategory').value = '';
         document.getElementById('linkSection').innerHTML = '<option value="">Select section first...</option>';
         buildLinksFlat();
-      } catch(e) {
-        showStatus('Save failed: ' + e.message, 'error');
-      }
+      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
     });
 
     // ── Render links ───────────────────────────────────────
     function renderLinks() {
       buildLinksFlat();
       const cont = document.getElementById('linksContainer');
-      if (!links.length) { cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No links yet. Add your first one!</p>'; return; }
+      if (!links.length) { cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No links yet.</p>'; return; }
       cont.innerHTML = links.map((l, i) => `
         <div class="link-item">
           <img src="${l.image || 'https://via.placeholder.com/44?text=?}'}" alt="${l.title}" onerror="this.src='https://via.placeholder.com/44?text=?'" />
@@ -443,82 +425,20 @@
             <div class="link-item-meta">${l._catName}${l._secName ? ' › ' + l._secName : ''}</div>
           </div>
           <div class="link-item-actions">
-            <button class="edit-btn" onclick="openEditLink(${i})">Edit</button>
-            <button class="delete-btn" onclick="openDeleteLink(${i})">Delete</button>
+            <button class="edit-btn" onclick="deleteLink(${i})">Delete</button>
           </div>
         </div>
       `).join('');
     }
 
-    // ── Edit / Delete link ────────────────────────────────
-    function openEditLink(idx) {
+    async function deleteLink(idx) {
       const l = links[idx];
-      document.getElementById('linkUrl').value = l.url;
-      document.getElementById('linkTitle').value = l.title;
-      document.getElementById('linkDesc').value = l.description || '';
-      document.getElementById('linkImage').value = l.image || '';
-      document.getElementById('linkBadge').value = l.badge || '';
-      document.getElementById('linkCategory').value = data.categories[l._ci].id;
-      buildSectionSelects(data.categories[l._ci].id);
-      if (l._secName) document.getElementById('linkSection').value = l._secName;
-      const p = document.getElementById('imgPreview');
-      if (l.image) { p.src = l.image; p.classList.add('show'); }
-      editLinkIdx = idx;
-      document.querySelector('[data-tab="add"]').click();
-      document.getElementById('addBtn').textContent = 'Update Link';
-      document.getElementById('addBtn').onclick = saveEditedLink;
-      showStatus('Editing — make changes and click Update Link', 'success');
-    }
-
-    async function saveEditedLink() {
-      const l = links[editLinkIdx];
-      const cat = data.categories[l._ci];
-      // Remove old
-      if (l._secName && cat.sections) {
-        cat.sections.find(s=>s.name===l._secName).links.splice(l._li, 1);
-      } else { cat.links.splice(l._li, 1); }
-      // Build new
-      const updated = {
-        title: document.getElementById('linkTitle').value.trim(),
-        description: document.getElementById('linkDesc').value.trim(),
-        url: document.getElementById('linkUrl').value.trim(),
-        image: document.getElementById('linkImage').value.trim(),
-        badge: document.getElementById('linkBadge').value.trim()
-      };
-      const newCatId = document.getElementById('linkCategory').value;
-      const newSecName = document.getElementById('linkSection').value;
-      const newCat = data.categories.find(c => c.id === newCatId);
-      if (newSecName && newCat.sections && newCat.sections.length) {
-        (newCat.sections.find(s=>s.name===newSecName)||newCat.sections[0]).links.push(updated);
-      } else { (newCat.links||[]).push(updated); }
-      try {
-        await saveData(`edit link: ${updated.title}`);
-        showStatus('Link updated!', 'success');
-        resetForm();
-        buildLinksFlat();
-      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
-    }
-
-    function openDeleteLink(idx) {
-      deleteLinkIdx = idx;
-      if (!confirm(`Delete "${links[idx].title}"?`)) return;
-      const l = links[idx];
+      if (!confirm(`Delete "${l.title}"?`)) return;
       const cat = data.categories[l._ci];
       if (l._secName && cat.sections) cat.sections.find(s=>s.name===l._secName).links.splice(l._li, 1);
       else cat.links.splice(l._li, 1);
-      saveData(`delete link: ${l.title}`).then(() => { showStatus('Link deleted', 'success'); renderLinks(); }).catch(e => showStatus('Delete failed: ' + e.message, 'error'));
-    }
-
-    function resetForm() {
-      ['linkUrl','linkTitle','linkDesc','linkImage','linkBadge'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('imgPreview').classList.remove('show');
-      document.getElementById('linkCategory').value = '';
-      document.getElementById('linkSection').innerHTML = '<option value="">Select section first...</option>';
-      document.getElementById('addBtn').textContent = 'Add Link';
-      document.getElementById('addBtn').onclick = null;
-      document.getElementById('addBtn').addEventListener('click', document.getElementById('addBtn').dataset.attached || '');
-      editLinkIdx = null;
-      buildLinksFlat();
+      try { await saveData(`delete link: ${l.title}`); showStatus('Link deleted', 'success'); renderLinks(); }
+      catch(e) { showStatus('Delete failed: ' + e.message, 'error'); }
     }
 
     // ── Render categories ───────────────────────────────────
@@ -528,34 +448,64 @@
         cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No categories yet. Create one above!</p>';
         return;
       }
-      cont.innerHTML = data.categories.map((cat, ci) => `
-        <div class="cat-card">
+      cont.innerHTML = '<ul class="drag-list" id="catSortList">' + data.categories.map((cat, ci) => `
+        <li class="cat-card" data-idx="${ci}">
           <div class="cat-card-header">
+            <span class="drag-handle">☰</span>
             <div>
               <div class="cat-card-title">${cat.icon || '📁'} ${cat.name}</div>
               <div class="cat-card-id">${cat.id}</div>
             </div>
           </div>
           ${cat.description ? `<div class="cat-card-desc">${cat.description}</div>` : ''}
-          <div class="cat-card-secs">
+          <div class="sec-list" id="secList${ci}">
             ${(cat.sections || []).map((s, si) => `
-              <span class="sec-chip">${s.name} (${(s.links||[]).length})
-                <span onclick="deleteSec(${ci},${si})" title="Delete section">×</span>
+              <span class="sec-chip" id="sec${ci}_${si}">${s.name} (${(s.links||[]).length})
+                <span class="sec-del" onclick="deleteSec(${ci},${si})">×</span>
               </span>
             `).join('')}
-            <button class="add-sec-btn" onclick="openAddSec(${ci})" style="display:inline-flex;align-items:center;gap:4px;background:none;border:1px dashed var(--border);border-radius:20px;padding:4px 10px;font-size:0.78rem;cursor:pointer;font-family:inherit;">
-              + Add Section
-            </button>
           </div>
           <div class="cat-card-actions">
-            <button onclick="openAddSec(${ci})">+ Add Section</button>
+            <button class="add-sec-btn" onclick="openAddSec(${ci})">+ Add Section</button>
             <button class="delete-btn" onclick="deleteCat(${ci})">Delete Category</button>
           </div>
-        </div>
-      `).join('');
+        </li>
+      `).join('') + '</ul>';
+      initSecSortAll();
     }
 
-    // ── Add category ───────────────────────────────────────
+    // ── Category drag sort ─────────────────────────────────
+    function initCatSort() {
+      if (sortableCats) sortableCats.destroy();
+      sortableCats = new Sortable(document.getElementById('catSortList'), {
+        animation: 200, handle: '.drag-handle',
+        onEnd: async function(evt) {
+          const item = data.categories.splice(evt.oldIndex, 1)[0];
+          data.categories.splice(evt.newIndex, 0, item);
+          try { await saveData('reorder categories'); showStatus('Order saved!', 'success'); buildCategorySelects(); }
+          catch(e) { showStatus('Reorder failed: ' + e.message, 'error'); renderCats(); }
+        }
+      });
+    }
+
+    // ── Section drag sort ──────────────────────────────────
+    function initSecSortAll() {
+      data.categories.forEach((cat, ci) => {
+        const el = document.getElementById('secList' + ci);
+        if (!el || !(cat.sections && cat.sections.length > 1)) return;
+        new Sortable(el, {
+          animation: 150,
+          onEnd: async function(evt) {
+            const item = cat.sections.splice(evt.oldIndex, 1)[0];
+            cat.sections.splice(evt.newIndex, 0, item);
+            try { await saveData(`reorder sections in ${cat.name}`); showStatus('Section order saved!', 'success'); }
+            catch(e) { showStatus('Reorder failed: ' + e.message, 'error'); renderCats(); }
+          }
+        });
+      });
+    }
+
+    // ── Add / Delete category ──────────────────────────────
     document.getElementById('addCatBtn').addEventListener('click', async () => {
       const name = document.getElementById('newCatName').value.trim();
       const id = document.getElementById('newCatId').value.trim().toLowerCase().replace(/\s+/g, '-');
@@ -571,30 +521,28 @@
         document.getElementById('newCatIcon').value = '';
         buildCategorySelects();
         renderCats();
+        if (sortableCats) { initCatSort(); }
       } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
     });
 
-    function deleteCat(ci) {
+    async function deleteCat(ci) {
       const cat = data.categories[ci];
-      if (!confirm(`Delete category "${cat.name}" and all its links?`)) return;
+      if (!confirm(`Delete "${cat.name}" and all its links?`)) return;
       data.categories.splice(ci, 1);
-      saveData(`delete category: ${cat.name}`).then(() => { showStatus('Category deleted', 'success'); buildCategorySelects(); renderCats(); }).catch(e => showStatus('Delete failed: ' + e.message, 'error'));
+      try { await saveData(`delete category: ${cat.name}`); showStatus('Category deleted', 'success'); buildCategorySelects(); renderCats(); initCatSort(); }
+      catch(e) { showStatus('Delete failed: ' + e.message, 'error'); }
     }
 
     // ── Section modal ──────────────────────────────────────
     function openAddSec(catIdx) {
-      document.getElementById('secModalTitle').textContent = 'Add Section';
       document.getElementById('secNameInput').value = '';
-      document.getElementById('secEditIdx').textContent = '';
       document.getElementById('secEditCatIdx').textContent = catIdx;
       document.getElementById('secModal').classList.remove('hidden');
+      document.getElementById('secNameInput').focus();
     }
+    function closeSecModal() { document.getElementById('secModal').classList.add('hidden'); }
 
-    function closeSecModal() {
-      document.getElementById('secModal').classList.add('hidden');
-    }
-
-    async function saveSec() {
+    async function saveNewSec() {
       const name = document.getElementById('secNameInput').value.trim();
       const catIdx = parseInt(document.getElementById('secEditCatIdx').textContent);
       if (!name) { showStatus('Section name required', 'error'); return; }
@@ -607,15 +555,17 @@
         showStatus('Section added!', 'success');
         buildCategorySelects();
         renderCats();
+        if (sortableCats) initCatSort();
       } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
     }
 
-    function deleteSec(catIdx, secIdx) {
+    async function deleteSec(catIdx, secIdx) {
       const cat = data.categories[catIdx];
       const sec = cat.sections[secIdx];
-      if (!confirm(`Delete section "${sec.name}" and all its ${(sec.links||[]).length} links?`)) return;
+      if (!confirm(`Delete section "${sec.name}" and its ${(sec.links||[]).length} links?`)) return;
       cat.sections.splice(secIdx, 1);
-      saveData(`delete section: ${sec.name}`).then(() => { showStatus('Section deleted', 'success'); buildCategorySelects(); renderCats(); }).catch(e => showStatus('Delete failed: ' + e.message, 'error'));
+      try { await saveData(`delete section: ${sec.name}`); showStatus('Section deleted', 'success'); buildCategorySelects(); renderCats(); initCatSort(); }
+      catch(e) { showStatus('Delete failed: ' + e.message, 'error'); }
     }
 
     // ── Toast ──────────────────────────────────────────────
