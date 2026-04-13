@@ -1,0 +1,47 @@
+{
+  "site": {
+    "name": "@spiritmade",
+    "tagline": "Products I actually use and love",
+    "avatar": "",
+    "accent": "#111111"
+  },
+  "categories": [
+    {
+      "id": "video-guestbook",
+      "name": "Video Guest Book",
+      "description": "Everything you need to set up the perfect video guest book experience.",
+      "icon": "🎬",
+      "links": [
+        {
+          "title": "Example Product",
+          "description": "Short description of what this is and why you love it.",
+          "url": "https://your-affiliate-link.com",
+          "image": "",
+          "badge": "Top Pick"
+        },
+        {
+          "title": "Another Product",
+          "description": "Great for capturing memories at events.",
+          "url": "https://your-affiliate-link.com",
+          "image": "",
+          "badge": ""
+        }
+      ]
+    },
+    {
+      "id": "photography-gear",
+      "name": "Photography Gear",
+      "description": "My go-to gear for wedding photography.",
+      "icon": "📷",
+      "links": [
+        {
+          "title": "Camera Body",
+          "description": "The camera I shoot with every weekend.",
+          "url": "https://your-affiliate-link.com",
+          "image": "",
+          "badge": "Daily Driver"
+        }
+      ]
+    }
+  ]
+}

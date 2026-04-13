@@ -1,0 +1,5 @@
+# Root → spiritmade
+/   /spiritmade   302
+
+# Handle direct category links (e.g. /spiritmade/#video-guestbook)
+# No extra rules needed — hash routing is client-side
