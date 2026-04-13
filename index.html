@@ -2,10 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=/spiritmade" />
   <title>Sidelinq</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script>window.location.replace('/spiritmade');</script>
+  <script>
+    // Netlify Identity confirmation/invite links land here — pass through to admin
+    if (window.location.hash.match(/(confirmation|invite_token|email_verified)/)) {
+      window.location.replace('/admin/#' + window.location.hash.substring(1));
+    } else {
+      window.location.replace('/spiritmade');
+    }
+  </script>
 </body>
 </html>

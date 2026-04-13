@@ -2,8 +2,17 @@ backend:
   name: git-gateway
   branch: main
 
+site_url: https://sidelinq.com
+display_url: https://sidelinq.com
+logo_url: https://sidelinq.com
+
 media_folder: "spiritmade/images"
 public_folder: "/images"
+
+redirects:
+  - from: "/"
+    to: "/spiritmade"
+    status: 302
 
 collections:
   - name: "links"
