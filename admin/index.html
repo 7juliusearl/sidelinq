@@ -359,7 +359,12 @@
       const btn = document.getElementById('fetchBtn');
       btn.textContent = 'Fetching...'; btn.classList.add('loading');
       try {
-        const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+        // Resolve redirects first (important for amzn.to short links)
+        const resolveRes = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+        const finalUrl = resolveRes.url;
+        // Use corsproxy.io — more reliable than allorigins for redirect-heavy URLs
+        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(finalUrl);
+        const res = await fetch(proxyUrl);
         const html = await res.text();
         const ogImg = html.match(/<meta[^>]+(?:property|name)=["']og:image["'][^>]+content=["']([^"']+)["']/i)
                    || html.match(/content=["']([^"']+)["'][^>]+(?:property|name)=["']og:image["']/i);
@@ -372,7 +377,7 @@
           document.getElementById('linkImage').value = img;
           const p = document.getElementById('imgPreview'); p.src = img; p.classList.add('show');
         }
-        showStatus('Auto-filled!', 'success');
+        showStatus(img || title ? 'Auto-filled!' : 'No preview found — fill in manually', img || title ? 'success' : 'error');
       } catch { showStatus('Could not fetch URL — fill in manually', 'error'); }
       finally { btn.textContent = 'Auto-fill'; btn.classList.remove('loading'); }
     });
