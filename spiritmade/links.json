@@ -7,6 +7,14 @@
   },
   "categories": [
     {
+      "id": "beast-case",
+      "name": "Beast Camera Case",
+      "description": "My wedding camera case",
+      "icon": "🟧",
+      "sections": [],
+      "links": []
+    },
+    {
       "id": "video-guestbook",
       "name": "Video Guest Book",
       "description": "My full video guest book setup — everything I use at every wedding.",
@@ -278,14 +286,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "beast-case",
-      "name": "Beast Camera Case",
-      "description": "My wedding camera case",
-      "icon": "🟧",
-      "sections": [],
-      "links": []
     }
   ]
 }
