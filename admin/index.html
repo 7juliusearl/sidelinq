@@ -8,193 +8,112 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #f5f5f5;
-      --surface: #ffffff;
-      --border: #e0e0e0;
-      --text: #111111;
-      --muted: #666666;
-      --accent: #111111;
-      --radius: 12px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --bg: #f5f5f5; --surface: #ffffff; --border: #e0e0e0;
+      --text: #111111; --muted: #666666; --accent: #111111;
+      --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
     }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    .hidden { display: none !important; }
 
     /* ── Topbar ─────────────────────────────── */
-    .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
     .topbar h1 { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
     .topbar-right { display: flex; align-items: center; gap: 12px; font-size: 0.875rem; }
     .topbar-user { color: var(--muted); }
-    .logout-btn {
-      background: none; border: 1px solid var(--border); border-radius: 8px;
-      padding: 6px 14px; font-size: 0.8rem; cursor: pointer; color: var(--text);
-      font-family: inherit;
-    }
+    .logout-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
     .logout-btn:hover { background: var(--bg); }
 
     /* ── Main ──────────────────────────────── */
-    .main { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+    .main { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
 
-    /* ── Section Tabs ──────────────────────── */
+    /* ── Tabs ──────────────────────────────── */
     .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; margin-bottom: 32px; }
-    .tab {
-      flex: 1; text-align: center; padding: 10px 16px; border-radius: 8px;
-      font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none;
-      background: none; color: var(--muted); font-family: inherit;
-      transition: background 0.15s, color 0.15s;
-    }
+    .tab { flex: 1; text-align: center; padding: 10px 16px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--muted); font-family: inherit; transition: background 0.15s, color 0.15s; }
     .tab.active { background: var(--accent); color: white; }
     .tab:not(.active):hover { background: var(--bg); }
 
-    /* ── Add Form ──────────────────────────── */
-    .add-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
-    .add-form h2 { font-size: 1rem; font-weight: 600; margin-bottom: 20px; }
+    /* ── Cards ─────────────────────────────── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 16px; }
+    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 20px; }
 
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    /* ── Fields ────────────────────────────── */
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; }
     .field input, .field select, .field textarea {
       width: 100%; padding: 10px 14px; border: 1px solid var(--border);
       border-radius: 8px; font-size: 0.9rem; font-family: inherit;
-      background: var(--bg); color: var(--text);
-      transition: border-color 0.15s;
+      background: var(--bg); color: var(--text); transition: border-color 0.15s;
     }
-    .field input:focus, .field select:focus, .field textarea:focus {
-      outline: none; border-color: var(--accent);
-    }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); }
     .field textarea { resize: vertical; min-height: 72px; }
-
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-short { max-width: 100px; }
 
     .url-row { display: flex; gap: 8px; }
     .url-row input { flex: 1; }
-    .fetch-btn {
-      padding: 10px 16px; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer;
-      font-family: inherit; white-space: nowrap; color: var(--text);
-    }
+    .fetch-btn { padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; }
     .fetch-btn:hover { border-color: var(--accent); }
     .fetch-btn.loading { opacity: 0.5; pointer-events: none; }
 
-    .img-preview {
-      width: 64px; height: 64px; border-radius: 8px; border: 1px solid var(--border);
-      object-fit: contain; background: var(--bg);
-    }
     .img-row { display: flex; align-items: center; gap: 12px; }
-    .img-row input { flex: 1; }
+    .img-preview { width: 56px; height: 56px; border-radius: 8px; object-fit: contain; background: var(--bg); border: 1px solid var(--border); flex-shrink: 0; display: none; }
+    .img-preview.show { display: block; }
 
-    .add-btn {
-      width: 100%; padding: 12px; background: var(--accent); color: white;
-      border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
-      cursor: pointer; font-family: inherit; margin-top: 4px;
-    }
+    .add-btn { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 4px; }
     .add-btn:hover { opacity: 0.88; }
     .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* ── Links List ────────────────────────── */
-    .links-list { margin-top: 40px; }
-    .links-list h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
-    .link-item {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px 16px;
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 8px; box-shadow: var(--shadow);
-    }
+    /* ── Links list ────────────────────────── */
+    .link-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; box-shadow: var(--shadow); }
     .link-item img { width: 44px; height: 44px; border-radius: 6px; object-fit: contain; background: var(--bg); border: 1px solid var(--border); flex-shrink: 0; }
     .link-item-info { flex: 1; min-width: 0; }
     .link-item-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .link-item-meta { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
     .link-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .link-item-actions button {
-      padding: 6px 12px; border-radius: 6px; font-size: 0.78rem;
-      font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid var(--border);
-      background: none;
-    }
+    .link-item-actions button { padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid var(--border); background: none; }
     .link-item-actions .delete-btn { color: #e53935; border-color: #e53935; }
     .link-item-actions .delete-btn:hover { background: #e53935; color: white; }
     .link-item-actions .edit-btn:hover { background: var(--bg); }
 
-    /* ── Status ────────────────────────────── */
-    .status {
-      position: fixed; bottom: 24px; right: 24px;
-      padding: 12px 20px; border-radius: 10px; font-size: 0.85rem;
-      font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      transform: translateY(100px); opacity: 0;
-      transition: transform 0.25s, opacity 0.25s;
-      z-index: 200;
-    }
+    /* ── Category cards ───────────────────── */
+    .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
+    .cat-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .cat-card-title { font-size: 1rem; font-weight: 700; }
+    .cat-card-id { font-size: 0.75rem; color: var(--muted); font-family: monospace; margin-top: 2px; }
+    .cat-card-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+    .cat-card-secs { margin-bottom: 12px; }
+    .sec-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 0.78rem; margin-right: 6px; margin-bottom: 6px; }
+    .sec-chip span { cursor: pointer; opacity: 0.5; font-size: 0.9rem; }
+    .sec-chip span:hover { opacity: 1; }
+    .cat-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cat-card-actions button { padding: 7px 14px; border-radius: 7px; font-size: 0.8rem; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid var(--border); background: none; }
+    .cat-card-actions button:hover { background: var(--bg); }
+    .cat-card-actions .delete-btn { color: #e53935; border-color: #e53935; }
+    .cat-card-actions .delete-btn:hover { background: #e53935; color: white; }
+    .add-sec-btn { border-style: dashed !important; color: var(--muted) !important; }
+
+    /* ── Modals ────────────────────────────── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+    .modal { background: white; border-radius: 16px; padding: 28px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal h3 { font-size: 1rem; margin-bottom: 20px; padding-right: 24px; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1; }
+    .modal-close:hover { color: var(--text); }
+    .modal .add-btn { margin-top: 16px; }
+
+    /* ── Status toast ─────────────────────── */
+    .status { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; box-shadow: var(--shadow-md); transform: translateY(100px); opacity: 0; transition: transform 0.25s, opacity 0.25s; z-index: 200; }
     .status.show { transform: none; opacity: 1; }
     .status.success { background: #111; color: #fff; }
     .status.error { background: #e53935; color: #fff; }
 
-    /* ── Auth screen ───────────────────────── */
-    .auth-screen {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 100vh; padding: 20px; text-align: center;
-    }
+    /* ── Auth ─────────────────────────────── */
+    .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
     .auth-screen h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
     .auth-screen p { color: var(--muted); font-size: 0.95rem; margin-bottom: 32px; }
-    .auth-screen .auth-btn {
-      padding: 14px 32px; background: var(--accent); color: white;
-      border: none; border-radius: 10px; font-size: 1rem; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-    }
-    .auth-screen .auth-btn:hover { opacity: 0.85; }
-    .hidden { display: none !important; }
-
-    /* ── Delete confirm ───────────────────── */
-    .confirm-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 300;
-    }
-    .confirm-box {
-      background: white; border-radius: 16px; padding: 28px;
-      max-width: 360px; width: 90%; text-align: center;
-    }
-    .confirm-box h3 { font-size: 1rem; margin-bottom: 8px; }
-    .confirm-box p { font-size: 0.875rem; color: var(--muted); margin-bottom: 20px; }
-    .confirm-btns { display: flex; gap: 10px; }
-    .confirm-btns button {
-      flex: 1; padding: 10px; border-radius: 8px; font-size: 0.875rem;
-      font-weight: 600; cursor: pointer; font-family: inherit; border: none;
-    }
-    .confirm-btns .cancel { background: var(--bg); border: 1px solid var(--border); }
-    .confirm-btns .confirm-delete { background: #e53935; color: white; }
-
-    /* ── Edit modal ───────────────────────── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 300; padding: 20px;
-    }
-    .modal {
-      background: white; border-radius: 16px; padding: 28px;
-      max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;
-    }
-    .modal h3 { font-size: 1rem; margin-bottom: 20px; }
-    .modal-close {
-      float: right; background: none; border: none; font-size: 1.2rem;
-      cursor: pointer; color: var(--muted); padding: 4px;
-    }
+    .auth-btn { padding: 14px 32px; background: var(--accent); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .auth-btn:hover { opacity: 0.85; }
   </style>
 </head>
 <body>
@@ -217,17 +136,16 @@
     </div>
 
     <div class="main">
-      <!-- Tabs -->
       <div class="tabs">
         <button class="tab active" data-tab="add">Add Link</button>
         <button class="tab" data-tab="manage">Manage Links</button>
+        <button class="tab" data-tab="categories">Categories</button>
       </div>
 
-      <!-- Add -->
-      <div id="tabAdd" class="tab-content">
-        <div class="add-form">
+      <!-- ── Add Link ────────────────────── -->
+      <div id="tabadd" class="tab-content">
+        <div class="card">
           <h2>Add a New Link</h2>
-
           <div class="field">
             <label>Product URL</label>
             <div class="url-row">
@@ -235,54 +153,77 @@
               <button class="fetch-btn" id="fetchBtn">Auto-fill</button>
             </div>
           </div>
-
           <div class="field">
             <label>Title</label>
             <input type="text" id="linkTitle" placeholder="Product name" />
           </div>
-
           <div class="field">
             <label>Description</label>
             <textarea id="linkDesc" placeholder="Short description..."></textarea>
           </div>
-
           <div class="field-row">
             <div class="field">
               <label>Category</label>
-              <select id="linkCategory">
-                <option value="">Select category...</option>
-              </select>
+              <select id="linkCategory"><option value="">Select category...</option></select>
             </div>
             <div class="field">
               <label>Section</label>
-              <select id="linkSection">
-                <option value="">Select section...</option>
-              </select>
+              <select id="linkSection"><option value="">Select section first...</option></select>
             </div>
           </div>
-
           <div class="field">
             <label>Image URL</label>
             <div class="img-row">
-              <img id="imgPreview" class="img-preview" src="" style="display:none" />
+              <img id="imgPreview" class="img-preview" src="" />
               <input type="url" id="linkImage" placeholder="https://... (auto-filled or paste your own)" />
             </div>
           </div>
-
           <div class="field">
-            <label>Badge <span style="font-weight:400;color:var(--muted)">(optional — e.g. "Top Pick")</span></label>
-            <input type="text" id="linkBadge" placeholder="Top Pick" />
+            <label>Badge <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+            <input type="text" id="linkBadge" placeholder="e.g. Top Pick" />
           </div>
-
           <button class="add-btn" id="addBtn">Add Link</button>
         </div>
       </div>
 
-      <!-- Manage -->
-      <div id="tabManage" class="tab-content hidden">
-        <div class="links-list">
+      <!-- ── Manage Links ────────────────── -->
+      <div id="tabmanage" class="tab-content hidden">
+        <div class="card">
           <h2>All Links</h2>
           <div id="linksContainer"></div>
+        </div>
+      </div>
+
+      <!-- ── Categories ──────────────────── -->
+      <div id="tabcategories" class="tab-content hidden">
+        <div class="card">
+          <h2>Add New Category</h2>
+          <div class="field-row">
+            <div class="field">
+              <label>Category Name</label>
+              <input type="text" id="newCatName" placeholder="e.g. Photography Gear" />
+            </div>
+            <div class="field">
+              <label>URL ID (slug)</label>
+              <input type="text" id="newCatId" placeholder="e.g. photography-gear" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Icon (emoji)</label>
+              <input type="text" id="newCatIcon" class="field-short" placeholder="📷" />
+            </div>
+            <div class="field">
+              <label>Description</label>
+              <input type="text" id="newCatDesc" placeholder="Short description" />
+            </div>
+          </div>
+          <button class="add-btn" id="addCatBtn">Add Category</button>
+        </div>
+
+        <div style="margin-top: 32px">
+          <h2 style="font-size:1rem;font-weight:600;margin-bottom:16px">Existing Categories</h2>
+          <div id="catsContainer"></div>
         </div>
       </div>
     </div>
@@ -291,54 +232,18 @@
   <!-- Status toast -->
   <div id="status" class="status"></div>
 
-  <!-- Delete confirm -->
-  <div id="confirmOverlay" class="confirm-overlay hidden">
-    <div class="confirm-box">
-      <h3>Delete this link?</h3>
-      <p id="confirmText">This action cannot be undone.</p>
-      <div class="confirm-btns">
-        <button class="cancel" onclick="closeConfirm()">Cancel</button>
-        <button class="confirm-delete" onclick="confirmDelete()">Delete</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit modal -->
-  <div id="modalOverlay" class="modal-overlay hidden">
+  <!-- Section modal -->
+  <div id="secModal" class="modal-overlay hidden">
     <div class="modal">
-      <button class="modal-close" onclick="closeModal()">×</button>
-      <h3>Edit Link</h3>
-      <div class="field">
-        <label>Title</label>
-        <input type="text" id="editTitle" />
+      <button class="modal-close" onclick="closeSecModal()">×</button>
+      <h3 id="secModalTitle">Add Section</h3>
+      <div class="field" style="margin-top:16px">
+        <label>Section Name</label>
+        <input type="text" id="secNameInput" placeholder="e.g. Camera & Accessories" />
       </div>
-      <div class="field">
-        <label>Description</label>
-        <textarea id="editDesc"></textarea>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Category</label>
-          <select id="editCategory"></select>
-        </div>
-        <div class="field">
-          <label>Section</label>
-          <select id="editSection"></select>
-        </div>
-      </div>
-      <div class="field">
-        <label>Image URL</label>
-        <input type="url" id="editImage" />
-      </div>
-      <div class="field">
-        <label>Badge</label>
-        <input type="text" id="editBadge" />
-      </div>
-      <div class="field">
-        <label>URL</label>
-        <input type="url" id="editUrl" />
-      </div>
-      <button class="add-btn" onclick="saveEdit()" style="margin-top:8px">Save Changes</button>
+      <div id="secEditIdx" style="display:none"></div>
+      <div id="secEditCatIdx" style="display:none"></div>
+      <button class="add-btn" onclick="saveSec()">Save Section</button>
     </div>
   </div>
 
@@ -346,9 +251,10 @@
   <script>
     // ── State ──────────────────────────────────────────────
     let data = null;
-    let links = [];           // flat list of all links with path info
-    let deleteTarget = null;
-    let editTarget = null;
+    let links = [];
+    let editLinkIdx = null;
+    let deleteLinkIdx = null;
+    let deleteCatIdx = null;
 
     // ── Auth ───────────────────────────────────────────────
     function showApp(user) {
@@ -357,28 +263,15 @@
       document.getElementById('userEmail').textContent = user.email;
       loadLinks();
     }
-
     function showAuth() {
       document.getElementById('authScreen').classList.remove('hidden');
       document.getElementById('app').classList.add('hidden');
     }
-
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      netlifyIdentity.open('login');
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      netlifyIdentity.logout();
-    });
-
-    netlifyIdentity.on('init', user => {
-      if (user) showApp(user); else showAuth();
-    });
-    netlifyIdentity.on('login', user => {
-      netlifyIdentity.close();
-      showApp(user);
-    });
-    netlifyIdentity.on('logout', () => showAuth());
+    document.getElementById('loginBtn').addEventListener('click', () => netlifyIdentity.open('login'));
+    document.getElementById('logoutBtn').addEventListener('click', () => netlifyIdentity.logout());
+    netlifyIdentity.on('init', u => u ? showApp(u) : showAuth());
+    netlifyIdentity.on('login', u => { netlifyIdentity.close(); showApp(u); });
+    netlifyIdentity.on('logout', showAuth);
 
     // ── Tabs ───────────────────────────────────────────────
     document.querySelectorAll('.tab').forEach(btn => {
@@ -386,146 +279,120 @@
         document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.tab-content').forEach(p => p.classList.add('hidden'));
-        document.getElementById('tab' + capitalize(btn.dataset.tab)).classList.remove('hidden');
+        document.getElementById('tab' + btn.dataset.tab).classList.remove('hidden');
         if (btn.dataset.tab === 'manage') renderLinks();
+        if (btn.dataset.tab === 'categories') renderCats();
       });
     });
 
-    // ── Load data ──────────────────────────────────────────
+    // ── Load ───────────────────────────────────────────────
     async function loadLinks() {
-      const res = await fetch('https://raw.githubusercontent.com/7juliusearl/sidelinq/main/spiritmade/links.json');
-      if (!res.ok) { showStatus('Could not load links', 'error'); return; }
-      data = await res.json();
-      buildCategorySelects();
-      buildLinksFlat();
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/7juliusearl/sidelinq/main/spiritmade/links.json');
+        if (!res.ok) throw new Error();
+        data = await res.json();
+        buildCategorySelects();
+        buildLinksFlat();
+      } catch {
+        showStatus('Could not load links — is the repo public?', 'error');
+      }
     }
 
+    // ── Flatten links ──────────────────────────────────────
     function buildLinksFlat() {
       links = [];
-      (data.categories || []).forEach(cat => {
-        const catId = cat.id;
-        const catName = cat.name;
+      (data.categories || []).forEach((cat, ci) => {
         if (cat.sections && cat.sections.length) {
-          cat.sections.forEach(sec => {
-            (sec.links || []).forEach((link, idx) => {
-              links.push({ ...link, _catId: catId, _catName: catName, _secName: sec.name, _secIdx: data.categories.indexOf(cat), _linkIdx: idx, _secLinkIdx: idx });
+          cat.sections.forEach((sec, si) => {
+            (sec.links || []).forEach((link, li) => {
+              links.push({ ...link, _ci: ci, _si: si, _li: li, _catName: cat.name, _secName: sec.name });
             });
           });
         } else {
-          (cat.links || []).forEach((link, idx) => {
-            links.push({ ...link, _catId: catId, _catName: catName, _secName: null, _secIdx: data.categories.indexOf(cat), _linkIdx: idx });
+          (cat.links || []).forEach((link, li) => {
+            links.push({ ...link, _ci: ci, _si: -1, _li: li, _catName: cat.name, _secName: null });
           });
         }
       });
     }
 
-    // ── Save to GitHub ─────────────────────────────────────
-    async function saveData(newData, message) {
-      // Get current SHA first
+    // ── Save ──────────────────────────────────────────────
+    async function saveData(msg) {
       const shaRes = await fetch('https://api.github.com/repos/7juliusearl/sidelinq/contents/spiritmade/links.json', {
         headers: { Accept: 'application/vnd.github.v3+json' }
       });
       const shaData = await shaRes.json();
-
       const body = {
         path: 'spiritmade/links.json',
-        content: JSON.stringify(newData, null, 2),
-        message,
+        content: JSON.stringify(data, null, 2),
+        message: msg,
         sha: shaData.sha
       };
-
       const res = await fetch('/.netlify/functions/commit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Save failed');
+        const e = await res.json();
+        throw new Error(e.error || 'Save failed');
       }
       return res.json();
     }
 
-    // ── Category / Section selects ─────────────────────────
+    // ── Category selects ───────────────────────────────────
     function buildCategorySelects() {
       const catSel = document.getElementById('linkCategory');
-      const secSel = document.getElementById('linkSection');
       catSel.innerHTML = '<option value="">Select category...</option>';
-      (data.categories || []).forEach(cat => {
-        catSel.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+      (data.categories || []).forEach(c => {
+        catSel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
       });
-      catSel.onchange = () => buildSectionSelects(catSel.value, secSel, true);
-      secSel.innerHTML = '<option value="">Select section first...</option>';
+      catSel.onchange = () => buildSectionSelects(catSel.value);
     }
 
-    function buildSectionSelects(catId, selectEl, reset) {
-      if (reset) selectEl.innerHTML = '<option value="">Select section...</option>';
+    function buildSectionSelects(catId) {
+      const secSel = document.getElementById('linkSection');
+      secSel.innerHTML = '<option value="">Select section...</option>';
       const cat = (data.categories || []).find(c => c.id === catId);
-      if (!cat || !cat.sections || !cat.sections.length) return;
-      cat.sections.forEach(sec => {
-        selectEl.innerHTML += `<option value="${sec.name}">${sec.name}</option>`;
+      if (!cat || !cat.sections) return;
+      cat.sections.forEach(s => {
+        secSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
       });
     }
 
-    function buildEditSelects(catId) {
-      const secEl = document.getElementById('editSection');
-      secEl.innerHTML = '<option value="">Select section...</option>';
-      const cat = (data.categories || []).find(c => c.id === catId);
-      if (!cat || !cat.sections || !cat.sections.length) return;
-      cat.sections.forEach(sec => {
-        secEl.innerHTML += `<option value="${sec.name}">${sec.name}</option>`;
-      });
-    }
-
-    // ── Auto-fill from URL ─────────────────────────────────
+    // ── Auto-fill ──────────────────────────────────────────
     document.getElementById('fetchBtn').addEventListener('click', async () => {
       const url = document.getElementById('linkUrl').value.trim();
       if (!url) return;
       const btn = document.getElementById('fetchBtn');
       btn.textContent = 'Fetching...';
       btn.classList.add('loading');
-
       try {
         const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
         const html = await res.text();
-
-        const get = v => {
-          const m = v.match(/<meta[^>]+(?:property|name)=["']([^"']+)["'][^>]+content=["']([^"']+)["']/i)
-               || v.match(/content=["']([^"']+)["'][^>]+(?:property|name)=["']([^"']+)["']/i);
-          return m ? m[2] : null;
-        };
-        const titleMatch = get(html) || html.match(/<title[^>]*>([^<]+)<\/title>/i);
-        const imgMatch = html.match(/<meta[^>]+(?:property|name)=["']og:image["'][^>]+content=["']([^"']+)["']/i)
-                      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']og:image["']/i);
-
-        const title = titleMatch ? (titleMatch[2] || titleMatch[1]).trim() : '';
-        const img = imgMatch ? imgMatch[1] : '';
-
+        const ogImg = html.match(/<meta[^>]+(?:property|name)=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+                   || html.match(/content=["']([^"']+)["'][^>]+(?:property|name)=["']og:image["']/i);
+        const ogTitle = html.match(/<meta[^>]+(?:property|name)=["']og:title["'][^>]+content=["']([^"']+)["']/i)
+                     || html.match(/content=["']([^"']+)["'][^>]+(?:property|name)=["']og:title["']/i);
+        const title = ogTitle ? ogTitle[1].replace(/&amp;/g,'&').trim() : '';
+        const img = ogImg ? ogImg[1] : '';
         if (title) document.getElementById('linkTitle').value = title;
         if (img) {
           document.getElementById('linkImage').value = img;
-          const preview = document.getElementById('imgPreview');
-          preview.src = img;
-          preview.style.display = 'block';
+          const p = document.getElementById('imgPreview');
+          p.src = img; p.classList.add('show');
         }
-        showStatus('Auto-filled! Edit anything before saving.', 'success');
-      } catch(e) {
-        showStatus('Could not fetch URL details. Fill in manually.', 'error');
+        showStatus('Auto-filled!', 'success');
+      } catch {
+        showStatus('Could not fetch URL — fill in manually', 'error');
       } finally {
-        btn.textContent = 'Auto-fill';
-        btn.classList.remove('loading');
+        btn.textContent = 'Auto-fill'; btn.classList.remove('loading');
       }
     });
 
     document.getElementById('linkImage').addEventListener('input', e => {
-      const preview = document.getElementById('imgPreview');
-      if (e.target.value) {
-        preview.src = e.target.value;
-        preview.style.display = 'block';
-      } else {
-        preview.style.display = 'none';
-      }
+      const p = document.getElementById('imgPreview');
+      e.target.value ? (p.src = e.target.value, p.classList.add('show')) : p.classList.remove('show');
     });
 
     // ── Add link ───────────────────────────────────────────
@@ -537,194 +404,226 @@
       const secName = document.getElementById('linkSection').value;
       const image = document.getElementById('linkImage').value.trim();
       const badge = document.getElementById('linkBadge').value.trim();
-
       if (!url || !title) { showStatus('URL and Title are required', 'error'); return; }
-      if (!catId) { showStatus('Please select a category', 'error'); return; }
-
-      const newLink = { title, description: desc, url, image, badge };
-
+      if (!catId) { showStatus('Select a category first', 'error'); return; }
       const cat = data.categories.find(c => c.id === catId);
       if (!cat) return;
-
+      const newLink = { title, description: desc, url, image, badge };
       if (secName && cat.sections && cat.sections.length) {
-        const sec = cat.sections.find(s => s.name === secName);
-        if (sec) sec.links.push(newLink);
-        else cat.sections[0].links.push(newLink);
+        const sec = cat.sections.find(s => s.name === secName) || cat.sections[0];
+        sec.links = sec.links || [];
+        sec.links.push(newLink);
       } else {
-        if (!cat.links) cat.links = [];
+        cat.links = cat.links || [];
         cat.links.push(newLink);
       }
-
       try {
-        await saveData(data, `add link: ${title}`);
+        await saveData(`add link: ${title}`);
         showStatus('Link added!', 'success');
-
-        // Reset form
         ['linkUrl','linkTitle','linkDesc','linkImage','linkBadge'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('imgPreview').style.display = 'none';
+        document.getElementById('imgPreview').classList.remove('show');
         document.getElementById('linkCategory').value = '';
         document.getElementById('linkSection').innerHTML = '<option value="">Select section first...</option>';
-
         buildLinksFlat();
       } catch(e) {
-        showStatus('Failed to save: ' + e.message, 'error');
+        showStatus('Save failed: ' + e.message, 'error');
       }
     });
 
     // ── Render links ───────────────────────────────────────
     function renderLinks() {
-      const cont = document.getElementById('linksContainer');
       buildLinksFlat();
-
-      if (!links.length) {
-        cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No links yet. Add your first one!</p>';
-        return;
-      }
-
-      cont.innerHTML = links.map((link, i) => `
+      const cont = document.getElementById('linksContainer');
+      if (!links.length) { cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No links yet. Add your first one!</p>'; return; }
+      cont.innerHTML = links.map((l, i) => `
         <div class="link-item">
-          <img src="${link.image || 'https://via.placeholder.com/44?text=?'}" alt="${link.title}"
-               onerror="this.src='https://via.placeholder.com/44?text=?'" />
+          <img src="${l.image || 'https://via.placeholder.com/44?text=?}'}" alt="${l.title}" onerror="this.src='https://via.placeholder.com/44?text=?'" />
           <div class="link-item-info">
-            <div class="link-item-title">${link.title}</div>
-            <div class="link-item-meta">${link._catName}${link._secName ? ' › ' + link._secName : ''}</div>
+            <div class="link-item-title">${l.title}</div>
+            <div class="link-item-meta">${l._catName}${l._secName ? ' › ' + l._secName : ''}</div>
           </div>
           <div class="link-item-actions">
-            <button class="edit-btn" onclick="openEdit(${i})">Edit</button>
-            <button class="delete-btn" onclick="openDelete(${i})">Delete</button>
+            <button class="edit-btn" onclick="openEditLink(${i})">Edit</button>
+            <button class="delete-btn" onclick="openDeleteLink(${i})">Delete</button>
           </div>
         </div>
       `).join('');
     }
 
-    // ── Delete ─────────────────────────────────────────────
-    function openDelete(idx) {
-      deleteTarget = idx;
-      document.getElementById('confirmText').textContent = `Delete "${links[idx].title}"?`;
-      document.getElementById('confirmOverlay').classList.remove('hidden');
+    // ── Edit / Delete link ────────────────────────────────
+    function openEditLink(idx) {
+      const l = links[idx];
+      document.getElementById('linkUrl').value = l.url;
+      document.getElementById('linkTitle').value = l.title;
+      document.getElementById('linkDesc').value = l.description || '';
+      document.getElementById('linkImage').value = l.image || '';
+      document.getElementById('linkBadge').value = l.badge || '';
+      document.getElementById('linkCategory').value = data.categories[l._ci].id;
+      buildSectionSelects(data.categories[l._ci].id);
+      if (l._secName) document.getElementById('linkSection').value = l._secName;
+      const p = document.getElementById('imgPreview');
+      if (l.image) { p.src = l.image; p.classList.add('show'); }
+      editLinkIdx = idx;
+      document.querySelector('[data-tab="add"]').click();
+      document.getElementById('addBtn').textContent = 'Update Link';
+      document.getElementById('addBtn').onclick = saveEditedLink;
+      showStatus('Editing — make changes and click Update Link', 'success');
     }
 
-    function closeConfirm() {
-      document.getElementById('confirmOverlay').classList.add('hidden');
-      deleteTarget = null;
-    }
-
-    async function confirmDelete() {
-      const link = links[deleteTarget];
-      const cat = data.categories.find(c => c.id === link._catId);
-      if (!cat) return;
-
-      if (link._secName && cat.sections) {
-        const sec = cat.sections.find(s => s.name === link._secName);
-        if (sec) sec.links.splice(link._linkIdx, 1);
-      } else {
-        cat.links.splice(link._linkIdx, 1);
-      }
-
-      try {
-        await saveData(data, `delete link: ${link.title}`);
-        closeConfirm();
-        showStatus('Link deleted', 'success');
-        renderLinks();
-      } catch(e) {
-        showStatus('Failed to delete: ' + e.message, 'error');
-      }
-    }
-
-    // ── Edit ───────────────────────────────────────────────
-    function openEdit(idx) {
-      editTarget = idx;
-      const link = links[idx];
-
-      document.getElementById('editTitle').value = link.title;
-      document.getElementById('editDesc').value = link.description || '';
-      document.getElementById('editImage').value = link.image || '';
-      document.getElementById('editBadge').value = link.badge || '';
-      document.getElementById('editUrl').value = link.url;
-
-      // Populate category select
-      const catSel = document.getElementById('editCategory');
-      catSel.innerHTML = (data.categories || []).map(c =>
-        `<option value="${c.id}" ${c.id === link._catId ? 'selected' : ''}>${c.name}</option>`
-      ).join('');
-
-      // Populate section select
-      const secEl = document.getElementById('editSection');
-      secEl.innerHTML = '<option value="">Select section...</option>';
-      const cat = data.categories.find(c => c.id === link._catId);
-      if (cat && cat.sections) {
-        cat.sections.forEach(sec => {
-          secEl.innerHTML += `<option value="${sec.name}" ${sec.name === link._secName ? 'selected' : ''}>${sec.name}</option>`;
-        });
-      }
-
-      catSel.onchange = () => buildEditSelects(catSel.value);
-
-      document.getElementById('modalOverlay').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.add('hidden');
-      editTarget = null;
-    }
-
-    async function saveEdit() {
-      const link = links[editTarget];
-      const newCatId = document.getElementById('editCategory').value;
-      const newSecName = document.getElementById('editSection').value;
-
-      // Remove from old location
-      const oldCat = data.categories.find(c => c.id === link._catId);
-      if (oldCat) {
-        if (link._secName && oldCat.sections) {
-          const oldSec = oldCat.sections.find(s => s.name === link._secName);
-          if (oldSec) oldSec.links.splice(link._linkIdx, 1);
-        } else {
-          oldCat.links.splice(link._linkIdx, 1);
-        }
-      }
-
-      // Build updated link
+    async function saveEditedLink() {
+      const l = links[editLinkIdx];
+      const cat = data.categories[l._ci];
+      // Remove old
+      if (l._secName && cat.sections) {
+        cat.sections.find(s=>s.name===l._secName).links.splice(l._li, 1);
+      } else { cat.links.splice(l._li, 1); }
+      // Build new
       const updated = {
-        title: document.getElementById('editTitle').value.trim(),
-        description: document.getElementById('editDesc').value.trim(),
-        url: document.getElementById('editUrl').value.trim(),
-        image: document.getElementById('editImage').value.trim(),
-        badge: document.getElementById('editBadge').value.trim()
+        title: document.getElementById('linkTitle').value.trim(),
+        description: document.getElementById('linkDesc').value.trim(),
+        url: document.getElementById('linkUrl').value.trim(),
+        image: document.getElementById('linkImage').value.trim(),
+        badge: document.getElementById('linkBadge').value.trim()
       };
-
-      // Add to new location
+      const newCatId = document.getElementById('linkCategory').value;
+      const newSecName = document.getElementById('linkSection').value;
       const newCat = data.categories.find(c => c.id === newCatId);
-      if (!newCat) return;
-
       if (newSecName && newCat.sections && newCat.sections.length) {
-        const sec = newCat.sections.find(s => s.name === newSecName);
-        if (sec) sec.links.push(updated);
-        else newCat.sections[0].links.push(updated);
-      } else {
-        if (!newCat.links) newCat.links = [];
-        newCat.links.push(updated);
-      }
-
+        (newCat.sections.find(s=>s.name===newSecName)||newCat.sections[0]).links.push(updated);
+      } else { (newCat.links||[]).push(updated); }
       try {
-        await saveData(data, `edit link: ${updated.title}`);
-        closeModal();
+        await saveData(`edit link: ${updated.title}`);
         showStatus('Link updated!', 'success');
-        renderLinks();
-      } catch(e) {
-        showStatus('Failed to save: ' + e.message, 'error');
-      }
+        resetForm();
+        buildLinksFlat();
+      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
     }
 
-    // ── Status toast ───────────────────────────────────────
+    function openDeleteLink(idx) {
+      deleteLinkIdx = idx;
+      if (!confirm(`Delete "${links[idx].title}"?`)) return;
+      const l = links[idx];
+      const cat = data.categories[l._ci];
+      if (l._secName && cat.sections) cat.sections.find(s=>s.name===l._secName).links.splice(l._li, 1);
+      else cat.links.splice(l._li, 1);
+      saveData(`delete link: ${l.title}`).then(() => { showStatus('Link deleted', 'success'); renderLinks(); }).catch(e => showStatus('Delete failed: ' + e.message, 'error'));
+    }
+
+    function resetForm() {
+      ['linkUrl','linkTitle','linkDesc','linkImage','linkBadge'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('imgPreview').classList.remove('show');
+      document.getElementById('linkCategory').value = '';
+      document.getElementById('linkSection').innerHTML = '<option value="">Select section first...</option>';
+      document.getElementById('addBtn').textContent = 'Add Link';
+      document.getElementById('addBtn').onclick = null;
+      document.getElementById('addBtn').addEventListener('click', document.getElementById('addBtn').dataset.attached || '');
+      editLinkIdx = null;
+      buildLinksFlat();
+    }
+
+    // ── Render categories ───────────────────────────────────
+    function renderCats() {
+      const cont = document.getElementById('catsContainer');
+      if (!data.categories || !data.categories.length) {
+        cont.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">No categories yet. Create one above!</p>';
+        return;
+      }
+      cont.innerHTML = data.categories.map((cat, ci) => `
+        <div class="cat-card">
+          <div class="cat-card-header">
+            <div>
+              <div class="cat-card-title">${cat.icon || '📁'} ${cat.name}</div>
+              <div class="cat-card-id">${cat.id}</div>
+            </div>
+          </div>
+          ${cat.description ? `<div class="cat-card-desc">${cat.description}</div>` : ''}
+          <div class="cat-card-secs">
+            ${(cat.sections || []).map((s, si) => `
+              <span class="sec-chip">${s.name} (${(s.links||[]).length})
+                <span onclick="deleteSec(${ci},${si})" title="Delete section">×</span>
+              </span>
+            `).join('')}
+            <button class="add-sec-btn" onclick="openAddSec(${ci})" style="display:inline-flex;align-items:center;gap:4px;background:none;border:1px dashed var(--border);border-radius:20px;padding:4px 10px;font-size:0.78rem;cursor:pointer;font-family:inherit;">
+              + Add Section
+            </button>
+          </div>
+          <div class="cat-card-actions">
+            <button onclick="openAddSec(${ci})">+ Add Section</button>
+            <button class="delete-btn" onclick="deleteCat(${ci})">Delete Category</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Add category ───────────────────────────────────────
+    document.getElementById('addCatBtn').addEventListener('click', async () => {
+      const name = document.getElementById('newCatName').value.trim();
+      const id = document.getElementById('newCatId').value.trim().toLowerCase().replace(/\s+/g, '-');
+      const icon = document.getElementById('newCatIcon').value.trim();
+      const desc = document.getElementById('newCatDesc').value.trim();
+      if (!name || !id) { showStatus('Name and ID are required', 'error'); return; }
+      if (data.categories.find(c => c.id === id)) { showStatus('Category ID already exists', 'error'); return; }
+      data.categories.push({ id, name, description: desc, icon: icon || '🔗', sections: [], links: [] });
+      try {
+        await saveData(`add category: ${name}`);
+        showStatus('Category added!', 'success');
+        ['newCatName','newCatId','newCatDesc'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('newCatIcon').value = '';
+        buildCategorySelects();
+        renderCats();
+      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
+    });
+
+    function deleteCat(ci) {
+      const cat = data.categories[ci];
+      if (!confirm(`Delete category "${cat.name}" and all its links?`)) return;
+      data.categories.splice(ci, 1);
+      saveData(`delete category: ${cat.name}`).then(() => { showStatus('Category deleted', 'success'); buildCategorySelects(); renderCats(); }).catch(e => showStatus('Delete failed: ' + e.message, 'error'));
+    }
+
+    // ── Section modal ──────────────────────────────────────
+    function openAddSec(catIdx) {
+      document.getElementById('secModalTitle').textContent = 'Add Section';
+      document.getElementById('secNameInput').value = '';
+      document.getElementById('secEditIdx').textContent = '';
+      document.getElementById('secEditCatIdx').textContent = catIdx;
+      document.getElementById('secModal').classList.remove('hidden');
+    }
+
+    function closeSecModal() {
+      document.getElementById('secModal').classList.add('hidden');
+    }
+
+    async function saveSec() {
+      const name = document.getElementById('secNameInput').value.trim();
+      const catIdx = parseInt(document.getElementById('secEditCatIdx').textContent);
+      if (!name) { showStatus('Section name required', 'error'); return; }
+      const cat = data.categories[catIdx];
+      cat.sections = cat.sections || [];
+      cat.sections.push({ name, links: [] });
+      try {
+        await saveData(`add section: ${name} to ${cat.name}`);
+        closeSecModal();
+        showStatus('Section added!', 'success');
+        buildCategorySelects();
+        renderCats();
+      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
+    }
+
+    function deleteSec(catIdx, secIdx) {
+      const cat = data.categories[catIdx];
+      const sec = cat.sections[secIdx];
+      if (!confirm(`Delete section "${sec.name}" and all its ${(sec.links||[]).length} links?`)) return;
+      cat.sections.splice(secIdx, 1);
+      saveData(`delete section: ${sec.name}`).then(() => { showStatus('Section deleted', 'success'); buildCategorySelects(); renderCats(); }).catch(e => showStatus('Delete failed: ' + e.message, 'error'));
+    }
+
+    // ── Toast ──────────────────────────────────────────────
     function showStatus(msg, type) {
       const el = document.getElementById('status');
-      el.textContent = msg;
-      el.className = 'status ' + type + ' show';
-      setTimeout(() => el.classList.remove('show'), 3000);
+      el.textContent = msg; el.className = 'status ' + type + ' show';
+      setTimeout(() => el.classList.remove('show'), 3500);
     }
-
-    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   </script>
 </body>
 </html>
