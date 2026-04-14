@@ -333,7 +333,8 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const file = await res.json();
-        data = JSON.parse(atob(file.content));
+        const rawBytes = Uint8Array.from(atob(file.content.replace(/\s/g, '')), c => c.charCodeAt(0));
+        data = JSON.parse(new TextDecoder('utf-8').decode(rawBytes));
         buildCategorySelects();
         buildLinksFlat();
         showStatus('Loaded ✓', 'success');
