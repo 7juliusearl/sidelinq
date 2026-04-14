@@ -52,19 +52,38 @@ exports.handler = async (event) => {
     }
 
     // ── Amazon-specific handling ─────────────────────────────────
-    // Amazon blocks serverless function scraping (returns 503 CAPTCHA pages)
-    // and they recently deprecated the /images/P/ fallback, returning 1x1 transparent GIFs.
-    // So for Amazon, we gracefully return empty data rather than a broken image or crashing.
     const isAmazon = /amazon\.(com|co\.\w{2,}|de|fr|it|es|ca|com\.au|co\.jp|in)/i.test(finalUrl);
     if (isAmazon) {
-      const slugMatch = finalUrl.match(/amazon\.[^/]+\/([^/]+)\/dp\//);
       let title = "";
+      let image = "";
+      
+      const slugMatch = finalUrl.match(/amazon\.[^/]+\/([^/]+)\/(?:dp|gp\/product)\//i);
       if (slugMatch) {
          title = decodeURIComponent(slugMatch[1]).replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
       }
+      
+      const asinMatch = finalUrl.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i);
+      if (asinMatch) {
+        const asin = asinMatch[1];
+        const testImageUrl = `https://m.media-amazon.com/images/P/${asin}._AC_SL300_.jpg`;
+        
+        try {
+          // Verify Amazon didn't return a 1x1 transparent tracking GIF for this ASIN
+          const imgRes = await fetch(testImageUrl, { method: "HEAD", timeout: 3000 });
+          const contentType = imgRes.headers.get("content-type") || "";
+          const contentLength = imgRes.headers.get("content-length") || "";
+          
+          if (!contentType.includes("image/gif") && contentLength !== "43") {
+            image = testImageUrl;
+          }
+        } catch(e) {
+           // Skip if verification fails
+        }
+      }
+      
       return {
         statusCode: 200,
-        body: JSON.stringify({ title, image: "", description: "" }),
+        body: JSON.stringify({ title, image, description: "" }),
         headers: { "Content-Type": "application/json" },
       };
     }
