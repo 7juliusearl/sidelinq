@@ -287,6 +287,32 @@
     </div>
   </div>
 
+  <!-- Edit Category modal -->
+  <div id="editCatModal" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close" onclick="closeEditCatModal()">×</button>
+      <h3>Edit Category</h3>
+      <input type="hidden" id="editCatIdx" />
+      <div class="field" style="margin-top:16px">
+        <label>Category Name</label>
+        <input type="text" id="editCatName" placeholder="e.g. Photography Gear" />
+      </div>
+      <div class="field">
+        <label>URL ID (slug)</label>
+        <input type="text" id="editCatId" placeholder="e.g. photography-gear" />
+      </div>
+      <div class="field">
+        <label>Icon (emoji)</label>
+        <input type="text" id="editCatIcon" class="field-short" placeholder="📷" />
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <input type="text" id="editCatDesc" placeholder="Short description" />
+      </div>
+      <button class="add-btn" onclick="saveEditCat()">Save Changes</button>
+    </div>
+  </div>
+
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     // ── State ──────────────────────────────────────────────
@@ -588,6 +614,7 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
           </div>
           <div class="cat-card-actions">
             <button class="add-sec-btn" onclick="openAddSec(${ci})">+ Add Section</button>
+            <button class="edit-btn" onclick="openEditCat(${ci})">Edit Category</button>
             <button class="delete-btn" onclick="deleteCat(${ci})">Delete Category</button>
           </div>
         </li>
@@ -662,6 +689,54 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
       data.categories.splice(ci, 1);
       try { await saveData(`delete category: ${cat.name}`); showStatus('Category deleted', 'success'); buildCategorySelects(); renderCats(); initCatSort(); }
       catch(e) { showStatus('Delete failed: ' + e.message, 'error'); }
+    }
+
+    // ── Edit Category Modal ────────────────────────────────
+    function openEditCat(ci) {
+      const cat = data.categories[ci];
+      document.getElementById('editCatIdx').value = ci;
+      document.getElementById('editCatName').value = cat.name || '';
+      document.getElementById('editCatId').value = cat.id || '';
+      document.getElementById('editCatIcon').value = cat.icon || '';
+      document.getElementById('editCatDesc').value = cat.description || '';
+      document.getElementById('editCatModal').classList.remove('hidden');
+    }
+    
+    function closeEditCatModal() {
+      document.getElementById('editCatModal').classList.add('hidden');
+    }
+    
+    async function saveEditCat() {
+      const ci = parseInt(document.getElementById('editCatIdx').value);
+      const cat = data.categories[ci];
+      
+      const newName = document.getElementById('editCatName').value.trim();
+      const newId = document.getElementById('editCatId').value.trim().toLowerCase().replace(/\s+/g, '-');
+      
+      if (!newName || !newId) { showStatus('Name and ID are required', 'error'); return; }
+      
+      // Auto-update links if Category ID changed
+      if (newId !== cat.id) {
+        if (data.categories.find((c, i) => i !== ci && c.id === newId)) {
+          showStatus('Category ID already exists', 'error'); return;
+        }
+      }
+      
+      cat.name = newName;
+      cat.id = newId;
+      cat.icon = document.getElementById('editCatIcon').value.trim() || '🔗';
+      cat.description = document.getElementById('editCatDesc').value.trim();
+      
+      try {
+        await saveData(`edit category: ${cat.name}`);
+        showStatus('Category updated!', 'success');
+        closeEditCatModal();
+        buildCategorySelects(); // update dropdowns
+        buildLinksFlat();       // updates links that point to potentially renamed cat
+        renderLinks();
+        renderCats();
+        initCatSort();
+      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
     }
 
     // ── Section modal ──────────────────────────────────────
