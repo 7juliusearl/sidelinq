@@ -12,7 +12,15 @@
       "description": "My wedding camera case",
       "icon": "🧳",
       "sections": [],
-      "links": []
+      "links": [
+        {
+          "title": "NANUK 935",
+          "description": "",
+          "url": "https://amzn.to/4tFERw9",
+          "image": "",
+          "badge": ""
+        }
+      ]
     },
     {
       "id": "video-guestbook",
