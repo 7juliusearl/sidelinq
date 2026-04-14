@@ -52,28 +52,22 @@ exports.handler = async (event) => {
     }
 
     // ── Amazon-specific handling ─────────────────────────────────
+    // Amazon blocks serverless function scraping (returns 503 CAPTCHA pages)
+    // and they recently deprecated the /images/P/ fallback, returning 1x1 transparent GIFs.
+    // So for Amazon, we gracefully return empty data rather than a broken image or crashing.
     const isAmazon = /amazon\.(com|co\.\w{2,}|de|fr|it|es|ca|com\.au|co\.jp|in)/i.test(finalUrl);
     if (isAmazon) {
-      // Extract ASIN from Amazon URL patterns:
-      // /dp/B0XXXXXX, /gp/product/B0XXXXXX, /gp/aw/d/B0XXXXXX
-      const asinMatch = finalUrl.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i);
-      if (asinMatch) {
-        const asin = asinMatch[1];
-        // Amazon's CDN image URL pattern — reliably serves product images
-        const image = `https://m.media-amazon.com/images/P/${asin}._AC_SL300_.jpg`;
-        // Extract product title from URL slug if available
-        const slugMatch = finalUrl.match(/amazon\.[^/]+\/([^/]+)\/dp\//);
-        const title = slugMatch
-          ? decodeURIComponent(slugMatch[1]).replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())
-          : "";
-        return {
-          statusCode: 200,
-          body: JSON.stringify({ title, image, description: "" }),
-          headers: { "Content-Type": "application/json" },
-        };
+      const slugMatch = finalUrl.match(/amazon\.[^/]+\/([^/]+)\/dp\//);
+      let title = "";
+      if (slugMatch) {
+         title = decodeURIComponent(slugMatch[1]).replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
       }
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ title, image: "", description: "" }),
+        headers: { "Content-Type": "application/json" },
+      };
     }
-
     // ── Generic OG scraping for non-Amazon URLs ─────────────────
     const res = await fetch(finalUrl, {
       redirect: "follow",
