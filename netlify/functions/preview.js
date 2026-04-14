@@ -21,29 +21,33 @@ exports.handler = async (event) => {
   try {
     // ── Resolve short URLs (amzn.to, bit.ly, etc.) ──────────────
     let finalUrl = url;
-    const shortDomains = ["amzn.to", "bit.ly", "t.co", "goo.gl", "tinyurl.com", "a.co"];
-    const urlHost = new URL(url).hostname;
-    if (shortDomains.some(d => urlHost === d || urlHost.endsWith("." + d))) {
-      try {
-        const redirectRes = await fetch(url, {
-          method: "HEAD",
-          redirect: "follow",
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-          },
-        });
-        finalUrl = redirectRes.url || url;
-      } catch {
-        // If HEAD fails, try GET with manual redirect tracking
+    let loopCount = 0;
+    while (loopCount < 3) {
+      if (!/^https?:\/\//i.test(finalUrl)) break;
+      const urlHost = new URL(finalUrl).hostname;
+      const shortDomains = ["amzn.to", "bit.ly", "t.co", "goo.gl", "tinyurl.com", "a.co"];
+      if (shortDomains.some(d => urlHost === d || urlHost.endsWith("." + d))) {
         try {
-          const redirectRes = await fetch(url, {
-            redirect: "follow",
+          // Use manual redirect to catch the location without crashing if the final target (like Amazon) returns a 503
+          const redirectRes = await fetch(finalUrl, {
+            method: "HEAD",
+            redirect: "manual",
             headers: {
-              "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
             },
           });
-          finalUrl = redirectRes.url || url;
-        } catch { /* keep original url */ }
+          const loc = redirectRes.headers.get("location");
+          if (loc) {
+            finalUrl = new URL(loc, finalUrl).toString();
+          } else {
+            break;
+          }
+        } catch {
+          break;
+        }
+        loopCount++;
+      } else {
+        break; // Not a shortlink
       }
     }
 
