@@ -254,6 +254,39 @@
     </div>
   </div>
 
+  <!-- Edit link modal -->
+  <div id="editModal" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close" onclick="closeEditModal()">×</button>
+      <h3>Edit Link</h3>
+      <input type="hidden" id="editLinkIdx" />
+      <div class="field" style="margin-top:16px">
+        <label>Title</label>
+        <input type="text" id="editLinkTitle" placeholder="Product name" />
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="editLinkDesc" placeholder="Short description..."></textarea>
+      </div>
+      <div class="field">
+        <label>URL</label>
+        <input type="url" id="editLinkUrl" placeholder="https://..." />
+      </div>
+      <div class="field">
+        <label>Image URL</label>
+        <div class="img-row">
+          <img id="editImgPreview" class="img-preview" src="" />
+          <input type="url" id="editLinkImage" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="field">
+        <label>Badge <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+        <input type="text" id="editLinkBadge" placeholder="e.g. Top Pick" />
+      </div>
+      <button class="add-btn" onclick="saveEditLink()">Save Changes</button>
+    </div>
+  </div>
+
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     // ── State ──────────────────────────────────────────────
@@ -430,7 +463,8 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
             <div class="link-item-meta">${l._catName}${l._secName ? ' › ' + l._secName : ''}</div>
           </div>
           <div class="link-item-actions">
-            <button class="edit-btn" onclick="deleteLink(${i})">Delete</button>
+            <button class="edit-btn" onclick="openEditLink(${i})">Edit</button>
+            <button class="delete-btn" onclick="deleteLink(${i})">Delete</button>
           </div>
         </div>
       `).join('');
@@ -444,6 +478,51 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
       else cat.links.splice(l._li, 1);
       try { await saveData(`delete link: ${l.title}`); showStatus('Link deleted', 'success'); renderLinks(); }
       catch(e) { showStatus('Delete failed: ' + e.message, 'error'); }
+    }
+
+    // ── Edit link ────────────────────────────────────────────
+    function openEditLink(idx) {
+      const l = links[idx];
+      document.getElementById('editLinkIdx').value = idx;
+      document.getElementById('editLinkTitle').value = l.title || '';
+      document.getElementById('editLinkDesc').value = l.description || '';
+      document.getElementById('editLinkUrl').value = l.url || '';
+      document.getElementById('editLinkBadge').value = l.badge || '';
+      document.getElementById('editLinkImage').value = l.image || '';
+      const p = document.getElementById('editImgPreview');
+      if (l.image) { p.src = l.image; p.classList.add('show'); } else { p.classList.remove('show'); }
+      document.getElementById('editModal').classList.remove('hidden');
+      document.getElementById('editLinkTitle').focus();
+    }
+    function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+
+    document.getElementById('editLinkImage').addEventListener('input', e => {
+      const p = document.getElementById('editImgPreview');
+      e.target.value ? (p.src = e.target.value, p.classList.add('show')) : p.classList.remove('show');
+    });
+
+    async function saveEditLink() {
+      const idx = parseInt(document.getElementById('editLinkIdx').value);
+      const l = links[idx];
+      const cat = data.categories[l._ci];
+      const linkRef = l._secName && cat.sections
+        ? cat.sections.find(s => s.name === l._secName).links[l._li]
+        : cat.links[l._li];
+
+      linkRef.title       = document.getElementById('editLinkTitle').value.trim();
+      linkRef.description = document.getElementById('editLinkDesc').value.trim();
+      linkRef.url         = document.getElementById('editLinkUrl').value.trim();
+      linkRef.image       = document.getElementById('editLinkImage').value.trim();
+      linkRef.badge       = document.getElementById('editLinkBadge').value.trim();
+
+      if (!linkRef.title || !linkRef.url) { showStatus('Title and URL are required', 'error'); return; }
+      try {
+        await saveData(`edit link: ${linkRef.title}`);
+        showStatus('Link updated!', 'success');
+        closeEditModal();
+        buildLinksFlat();
+        renderLinks();
+      } catch(e) { showStatus('Save failed: ' + e.message, 'error'); }
     }
 
     // ── Render categories ───────────────────────────────────
