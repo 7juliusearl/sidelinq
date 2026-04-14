@@ -12,15 +12,7 @@
       "description": "My wedding camera case",
       "icon": "🧳",
       "sections": [],
-      "links": [
-        {
-          "title": "Nanuk Case",
-          "description": "",
-          "url": "https://amzn.to/4tFERw9",
-          "image": "",
-          "badge": ""
-        }
-      ]
+      "links": []
     },
     {
       "id": "video-guestbook",
