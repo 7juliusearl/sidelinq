@@ -207,7 +207,7 @@
             <div class="category-name">${cat.name}</div>
             ${cat.description ? `<div class="category-desc">${cat.description}</div>` : ''}
           </div>
-          <div class="category-count">${(cat.sections ? cat.sections.reduce((n,s)=>n+s.links.length,0) : (cat.links||[]).length)} links</div>
+          <div class="category-count">${((cat.sections||[]).reduce((n,s) => n + (s.links||[]).length, 0) + (cat.links||[]).length)} links</div>
           <div class="category-arrow">›</div>
         </a>
       `).join('');
