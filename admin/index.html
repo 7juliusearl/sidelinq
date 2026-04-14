@@ -394,26 +394,49 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
     }
 
     // ── Auto-fill ──────────────────────────────────────────
-    document.getElementById('fetchBtn').addEventListener('click', async () => {
-      const url = document.getElementById('linkUrl').value.trim();
+    async function fetchPreview(url, titleEl, descEl, imageEl, previewEl, statusBtn) {
       if (!url) return;
-      const btn = document.getElementById('fetchBtn');
-      btn.textContent = 'Fetching...'; btn.classList.add('loading');
+      if (statusBtn) { statusBtn.textContent = 'Fetching...'; statusBtn.classList.add('loading'); }
       try {
         showStatus('Fetching preview...', 'success');
         const res = await fetch('/.netlify/functions/preview?url=' + encodeURIComponent(url));
         if (!res.ok) throw new Error('HTTP ' + res.status + ' — try again in a moment');
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-        if (data.title) document.getElementById('linkTitle').value = data.title;
-        if (data.description) document.getElementById('linkDesc').value = data.description;
-        if (data.image) {
-          document.getElementById('linkImage').value = data.image;
-          const p = document.getElementById('imgPreview'); p.src = data.image; p.classList.add('show');
+        const d = await res.json();
+        if (d.error) throw new Error(d.error);
+        if (d.title && titleEl && !titleEl.value.trim()) titleEl.value = d.title;
+        if (d.description && descEl && !descEl.value.trim()) descEl.value = d.description;
+        if (d.image && imageEl) {
+          imageEl.value = d.image;
+          if (previewEl) { previewEl.src = d.image; previewEl.classList.add('show'); }
         }
-        showStatus(data.title || data.image ? 'Auto-filled!' : 'No preview found — fill in manually', data.title || data.image ? 'success' : 'error');
+        showStatus(d.title || d.image ? 'Auto-filled!' : 'No preview found — fill in manually', d.title || d.image ? 'success' : 'error');
       } catch(e) { showStatus('Auto-fill error: ' + e.message, 'error'); }
-      finally { btn.textContent = 'Auto-fill'; btn.classList.remove('loading'); }
+      finally { if (statusBtn) { statusBtn.textContent = 'Auto-fill'; statusBtn.classList.remove('loading'); } }
+    }
+
+    document.getElementById('fetchBtn').addEventListener('click', () => {
+      fetchPreview(
+        document.getElementById('linkUrl').value.trim(),
+        document.getElementById('linkTitle'),
+        document.getElementById('linkDesc'),
+        document.getElementById('linkImage'),
+        document.getElementById('imgPreview'),
+        document.getElementById('fetchBtn')
+      );
+    });
+
+    // Auto-fetch on paste
+    document.getElementById('linkUrl').addEventListener('paste', e => {
+      setTimeout(() => {
+        fetchPreview(
+          document.getElementById('linkUrl').value.trim(),
+          document.getElementById('linkTitle'),
+          document.getElementById('linkDesc'),
+          document.getElementById('linkImage'),
+          document.getElementById('imgPreview'),
+          document.getElementById('fetchBtn')
+        );
+      }, 100);
     });
 
     document.getElementById('linkImage').addEventListener('input', e => {
@@ -500,6 +523,19 @@ const NO_IMG = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27
     document.getElementById('editLinkImage').addEventListener('input', e => {
       const p = document.getElementById('editImgPreview');
       e.target.value ? (p.src = e.target.value, p.classList.add('show')) : p.classList.remove('show');
+    });
+
+    // Auto-fetch on paste in edit modal
+    document.getElementById('editLinkUrl').addEventListener('paste', e => {
+      setTimeout(() => {
+        fetchPreview(
+          document.getElementById('editLinkUrl').value.trim(),
+          null, null,
+          document.getElementById('editLinkImage'),
+          document.getElementById('editImgPreview'),
+          null
+        );
+      }, 100);
     });
 
     async function saveEditLink() {
